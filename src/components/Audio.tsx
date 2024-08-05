@@ -10,6 +10,8 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
         return { ...audioState, playing: false };
       case 'play/pause':
         return { ...audioState, playing: !audioState.playing };
+      case 'loop':
+        return { ...audioState, loop: !audioState.loop };
     }
   }
 
@@ -31,6 +33,7 @@ const DEFAULT_AUDIO_STATE: AudioState = {
   duration: 0,
   timeLeft: 0,
   currentTime: 0,
+  loop: false,
 };
 
 // * types
@@ -43,6 +46,7 @@ type AudioState = {
   duration: number;
   timeLeft: number;
   currentTime: number;
+  loop: boolean;
 };
 
 type AudioContext = AudioState & {
@@ -53,6 +57,7 @@ type AudioAction =
   | 'play'
   | 'pause'
   | 'play/pause'
+  | 'loop'
   | {
       type: 'time' | 'duration';
       payload: number;
@@ -83,6 +88,7 @@ const Audio = ({ children }: AudioProps) => {
       <audio
         controls
         ref={audioRef}
+        loop={audioState.loop}
         onPlay={dispatch.bind(null, 'play')}
         onPause={dispatch.bind(null, 'pause')}
         onTimeUpdate={timeUpdateHandler}
