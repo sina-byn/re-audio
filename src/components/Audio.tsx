@@ -74,6 +74,10 @@ const Audio = ({ children }: AudioProps) => {
 
   const audioContext = { ...audioState, audioRef };
 
+  /**
+   * Is the ref to the audio element necessary?
+   */
+
   return (
     <>
       <audio
