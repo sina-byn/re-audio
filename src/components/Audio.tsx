@@ -12,6 +12,8 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
         return { ...audioState, playing: !audioState.playing };
       case 'loop':
         return { ...audioState, loop: !audioState.loop };
+      case 'muted':
+        return { ...audioState, muted: !audioState.muted };
     }
   }
 
@@ -23,8 +25,6 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
     case 'time':
       return { ...audioState, currentTime: payload, timeLeft: audioState.duration - payload };
   }
-
-  return audioState;
 };
 
 // * data
@@ -33,6 +33,7 @@ const DEFAULT_AUDIO_STATE: AudioState = {
   duration: 0,
   timeLeft: 0,
   currentTime: 0,
+  muted: false,
   loop: false,
 };
 
@@ -46,6 +47,7 @@ type AudioState = {
   duration: number;
   timeLeft: number;
   currentTime: number;
+  muted: boolean;
   loop: boolean;
 };
 
@@ -55,12 +57,14 @@ type AudioContext = AudioState & {
   pause: () => void;
   togglePlay: () => void;
   toggleLoop: () => void;
+  toggleMuted: () => void;
 };
 
 type AudioAction =
   | 'play'
   | 'pause'
   | 'play/pause'
+  | 'muted'
   | 'loop'
   | {
       type: 'time' | 'duration';
@@ -92,9 +96,11 @@ const Audio = ({ children }: AudioProps) => {
     audio.paused ? audio.play() : audio.pause();
   }, []);
 
+  const toggleMuted = useCallback(() => dispatch('muted'), []);
+
   const toggleLoop = useCallback(() => dispatch('loop'), []);
 
-  const audioContext = { ...audioState, play, pause, togglePlay, toggleLoop, audioRef };
+  const audioContext = { ...audioState, play, pause, togglePlay, toggleMuted, toggleLoop, audioRef };
 
   /**
    * Is the ref to the audio element necessary?
@@ -106,6 +112,7 @@ const Audio = ({ children }: AudioProps) => {
         controls
         ref={audioRef}
         loop={audioState.loop}
+        muted={audioState.muted}
         onPlay={dispatch.bind(null, 'play')}
         onPause={dispatch.bind(null, 'pause')}
         onTimeUpdate={timeUpdateHandler}
