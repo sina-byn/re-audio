@@ -1,4 +1,4 @@
-import { useRef, useReducer } from 'react';
+import { useRef, useReducer, useCallback } from 'react';
 
 // * reducers
 const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
@@ -51,6 +51,9 @@ type AudioState = {
 
 type AudioContext = AudioState & {
   audioRef: React.RefObject<HTMLAudioElement>;
+  play: () => void;
+  pause: () => void;
+  togglePlay: () => void;
 };
 
 type AudioAction =
@@ -77,7 +80,18 @@ const Audio = ({ children }: AudioProps) => {
     dispatch({ type: 'duration', payload: audio.duration });
   };
 
-  const audioContext = { ...audioState, audioRef };
+  const play = useCallback(() => audioRef.current?.play(), []);
+
+  const pause = useCallback(() => audioRef.current?.pause(), []);
+
+  const togglePlay = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.paused ? audio.play() : audio.pause();
+  }, []);
+
+  const audioContext = { ...audioState, play, pause, togglePlay, audioRef };
 
   /**
    * Is the ref to the audio element necessary?
