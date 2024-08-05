@@ -75,17 +75,19 @@ const Audio = ({ children }: AudioProps) => {
   const audioContext = { ...audioState, audioRef };
 
   return (
-    <audio
-      controls
-      ref={audioRef}
-      onPlay={dispatch.bind(null, 'play')}
-      onPause={dispatch.bind(null, 'pause')}
-      onTimeUpdate={timeUpdateHandler}
-      onLoadedMetadata={metadataLoadHandler}
-    >
-      <source src='' />
+    <>
+      <audio
+        controls
+        ref={audioRef}
+        onPlay={dispatch.bind(null, 'play')}
+        onPause={dispatch.bind(null, 'pause')}
+        onTimeUpdate={timeUpdateHandler}
+        onLoadedMetadata={metadataLoadHandler}
+      >
+        <source src='/1.mp3' />
+      </audio>
       {children(audioContext)}
-    </audio>
+    </>
   );
 };
 
