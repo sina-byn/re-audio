@@ -19,7 +19,7 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
     case 'duration':
       return { ...audioState, duration: payload, timeLeft: payload };
     case 'time':
-      return { ...audioState, currentTime: payload, timeLeft: payload - audioState.duration };
+      return { ...audioState, currentTime: payload, timeLeft: audioState.duration - payload };
   }
 
   return audioState;
