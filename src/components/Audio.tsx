@@ -54,6 +54,7 @@ type AudioContext = AudioState & {
   play: () => void;
   pause: () => void;
   togglePlay: () => void;
+  toggleLoop: () => void;
 };
 
 type AudioAction =
@@ -91,7 +92,9 @@ const Audio = ({ children }: AudioProps) => {
     audio.paused ? audio.play() : audio.pause();
   }, []);
 
-  const audioContext = { ...audioState, play, pause, togglePlay, audioRef };
+  const toggleLoop = useCallback(() => dispatch('loop'), []);
+
+  const audioContext = { ...audioState, play, pause, togglePlay, toggleLoop, audioRef };
 
   /**
    * Is the ref to the audio element necessary?
