@@ -20,6 +20,8 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
   const { type, payload } = action;
 
   switch (type) {
+    case 'volume':
+      return { ...audioState, volume: Math.trunc(payload * 100) };
     case 'duration':
       return { ...audioState, duration: payload, timeLeft: payload };
     case 'time':
@@ -35,6 +37,7 @@ const DEFAULT_AUDIO_STATE: AudioState = {
   currentTime: 0,
   muted: false,
   loop: false,
+  volume: 100,
 };
 
 // * types
@@ -49,6 +52,7 @@ type AudioState = {
   currentTime: number;
   muted: boolean;
   loop: boolean;
+  volume: number;
 };
 
 type AudioContext = AudioState & {
@@ -58,6 +62,7 @@ type AudioContext = AudioState & {
   togglePlay: () => void;
   toggleLoop: () => void;
   toggleMuted: () => void;
+  setVolume: (newVolume: number) => void;
 };
 
 type AudioAction =
@@ -67,7 +72,7 @@ type AudioAction =
   | 'muted'
   | 'loop'
   | {
-      type: 'time' | 'duration';
+      type: 'time' | 'duration' | 'volume';
       payload: number;
     };
 
@@ -80,9 +85,17 @@ const Audio = ({ children }: AudioProps) => {
     dispatch({ type: 'time', payload: audio.currentTime });
   };
 
+  const volumeChangeHandler = (e: AudioEvent) => {
+    const audio = e.currentTarget;
+
+    dispatch({ type: 'volume', payload: audio.volume });
+  };
+
   const metadataLoadHandler = (e: AudioEvent) => {
     const audio = e.currentTarget;
+
     dispatch({ type: 'duration', payload: audio.duration });
+    dispatch({ type: 'volume', payload: audio.volume });
   };
 
   const play = useCallback(() => audioRef.current?.play(), []);
@@ -100,7 +113,24 @@ const Audio = ({ children }: AudioProps) => {
 
   const toggleLoop = useCallback(() => dispatch('loop'), []);
 
-  const audioContext = { ...audioState, play, pause, togglePlay, toggleMuted, toggleLoop, audioRef };
+  const setVolume = useCallback((newVolume: number) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    newVolume = Math.min(Math.max(0, newVolume), 100);
+    audio.volume = newVolume / 100;
+  }, []);
+
+  const audioContext = {
+    ...audioState,
+    play,
+    pause,
+    togglePlay,
+    toggleMuted,
+    toggleLoop,
+    setVolume,
+    audioRef,
+  };
 
   /**
    * Is the ref to the audio element necessary?
@@ -116,6 +146,7 @@ const Audio = ({ children }: AudioProps) => {
         onPlay={dispatch.bind(null, 'play')}
         onPause={dispatch.bind(null, 'pause')}
         onTimeUpdate={timeUpdateHandler}
+        onVolumeChange={volumeChangeHandler}
         onLoadedMetadata={metadataLoadHandler}
       >
         <source src='/1.mp3' />
