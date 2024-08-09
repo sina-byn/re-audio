@@ -20,9 +20,10 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
   const { type, payload } = action;
 
   switch (type) {
+    case 'loading':
+      return { ...audioState, loading: payload };
     case 'volume':
       return { ...audioState, volume: Math.trunc(payload * 100) };
-
     case 'duration':
       return { ...audioState, duration: payload, timeLeft: payload };
     case 'time':
@@ -35,6 +36,7 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
 // * data
 const DEFAULT_AUDIO_STATE: AudioState = {
   playing: false,
+  loading: false,
   duration: 0,
   timeLeft: 0,
   currentTime: 0,
@@ -51,6 +53,7 @@ type AudioProps = { children: (audioContext: AudioContext) => React.ReactNode };
 
 type AudioState = {
   playing: boolean;
+  loading: boolean;
   duration: number;
   timeLeft: number;
   currentTime: number;
@@ -79,6 +82,7 @@ type AudioAction =
   | 'play/pause'
   | 'muted'
   | 'loop'
+  | { type: 'loading'; payload: boolean }
   | {
       type: 'time' | 'duration' | 'volume' | 'playbackRate';
       payload: number;
@@ -183,6 +187,9 @@ const Audio = ({ children }: AudioProps) => {
         onTimeUpdate={timeUpdateHandler}
         onVolumeChange={volumeChangeHandler}
         onLoadedMetadata={metadataLoadHandler}
+        onCanPlay={dispatch.bind(null, { type: 'loading', payload: false })}
+        onWaiting={dispatch.bind(null, { type: 'loading', payload: true })}
+        onLoadStart={dispatch.bind(null, { type: 'loading', payload: true })}
       >
         <source src='/1.mp3' />
       </audio>
