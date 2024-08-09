@@ -68,6 +68,8 @@ type AudioContext = AudioState & {
   toggleLoop: () => void;
   toggleMuted: () => void;
   setVolume: (newVolume: number) => void;
+  forwardTrack: (step?: number) => void;
+  rewindTrack: (step?: number) => void;
   setPlaybackRate: (newPlaybackRate: number) => void;
 };
 
@@ -135,7 +137,23 @@ const Audio = ({ children }: AudioProps) => {
     dispatch({ type: 'playbackRate', payload: newPlaybackRate });
   }, []);
 
-  const audioContext = {
+  const forwardTrack = useCallback((step: number = 5) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    step = Math.abs(step);
+    audio.currentTime = Math.min(audio.currentTime + step, audio.duration);
+  }, []);
+
+  const rewindTrack = useCallback((step: number = 5) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    step = Math.abs(step);
+    audio.currentTime = Math.max(0, audio.currentTime - step);
+  }, []);
+
+  const audioContext: AudioContext = {
     ...audioState,
     play,
     pause,
@@ -144,6 +162,8 @@ const Audio = ({ children }: AudioProps) => {
     toggleLoop,
     setVolume,
     setPlaybackRate,
+    forwardTrack,
+    rewindTrack,
     audioRef,
   };
 
