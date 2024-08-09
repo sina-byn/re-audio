@@ -22,10 +22,13 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
   switch (type) {
     case 'volume':
       return { ...audioState, volume: Math.trunc(payload * 100) };
+
     case 'duration':
       return { ...audioState, duration: payload, timeLeft: payload };
     case 'time':
       return { ...audioState, currentTime: payload, timeLeft: audioState.duration - payload };
+    case 'playbackRate':
+      return { ...audioState, playbackRate: payload };
   }
 };
 
@@ -38,6 +41,7 @@ const DEFAULT_AUDIO_STATE: AudioState = {
   muted: false,
   loop: false,
   volume: 100,
+  playbackRate: 1,
 };
 
 // * types
@@ -53,6 +57,7 @@ type AudioState = {
   muted: boolean;
   loop: boolean;
   volume: number;
+  playbackRate: number;
 };
 
 type AudioContext = AudioState & {
@@ -63,6 +68,7 @@ type AudioContext = AudioState & {
   toggleLoop: () => void;
   toggleMuted: () => void;
   setVolume: (newVolume: number) => void;
+  setPlaybackRate: (newPlaybackRate: number) => void;
 };
 
 type AudioAction =
@@ -72,7 +78,7 @@ type AudioAction =
   | 'muted'
   | 'loop'
   | {
-      type: 'time' | 'duration' | 'volume';
+      type: 'time' | 'duration' | 'volume' | 'playbackRate';
       payload: number;
     };
 
@@ -121,6 +127,14 @@ const Audio = ({ children }: AudioProps) => {
     audio.volume = newVolume / 100;
   }, []);
 
+  const setPlaybackRate = useCallback((newPlaybackRate: number) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.playbackRate = newPlaybackRate;
+    dispatch({ type: 'playbackRate', payload: newPlaybackRate });
+  }, []);
+
   const audioContext = {
     ...audioState,
     play,
@@ -129,6 +143,7 @@ const Audio = ({ children }: AudioProps) => {
     toggleMuted,
     toggleLoop,
     setVolume,
+    setPlaybackRate,
     audioRef,
   };
 
