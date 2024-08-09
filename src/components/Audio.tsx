@@ -1,4 +1,4 @@
-import { useRef, useReducer, useCallback } from 'react';
+import { useRef, useEffect, useReducer, useCallback } from 'react';
 
 // * reducers
 const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
@@ -20,6 +20,8 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
   const { type, payload } = action;
 
   switch (type) {
+    case 'track':
+      return { ...audioState, trackIndex: payload };
     case 'loading':
       return { ...audioState, loading: payload };
     case 'volume':
@@ -44,12 +46,23 @@ const DEFAULT_AUDIO_STATE: AudioState = {
   loop: false,
   volume: 100,
   playbackRate: 1,
+  trackIndex: 0,
 };
 
 // * types
 type AudioEvent = React.SyntheticEvent<HTMLAudioElement, Event>;
 
-type AudioProps = { children: (audioContext: AudioContext) => React.ReactNode };
+type AudioProps = {
+  playlist: AudioTrack[];
+  children: (audioContext: AudioContext) => React.ReactNode;
+};
+
+type AudioTrack = {
+  id: string | number;
+  src: string;
+  type?: string;
+  fallbacks?: Pick<AudioTrack, 'src' | 'type'>[];
+} & Record<string, unknown>;
 
 type AudioState = {
   playing: boolean;
@@ -61,10 +74,12 @@ type AudioState = {
   loop: boolean;
   volume: number;
   playbackRate: number;
+  trackIndex: number;
 };
 
 type AudioContext = AudioState & {
   audioRef: React.RefObject<HTMLAudioElement>;
+  playlist: AudioTrack[];
   play: () => void;
   pause: () => void;
   togglePlay: () => void;
@@ -73,6 +88,8 @@ type AudioContext = AudioState & {
   setVolume: (newVolume: number) => void;
   forwardTrack: (step?: number) => void;
   rewindTrack: (step?: number) => void;
+  nextTrack: () => void;
+  prevTrack: () => void;
   setPlaybackRate: (newPlaybackRate: number) => void;
 };
 
@@ -84,13 +101,15 @@ type AudioAction =
   | 'loop'
   | { type: 'loading'; payload: boolean }
   | {
-      type: 'time' | 'duration' | 'volume' | 'playbackRate';
+      type: 'track' | 'time' | 'duration' | 'volume' | 'playbackRate';
       payload: number;
     };
 
-const Audio = ({ children }: AudioProps) => {
+const Audio = ({ playlist, children }: AudioProps) => {
   const [audioState, dispatch] = useReducer(reducer, DEFAULT_AUDIO_STATE);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const track = playlist[audioState.trackIndex];
+  const trackCount = playlist.length;
 
   const timeUpdateHandler = (e: AudioEvent) => {
     const audio = e.currentTarget;
@@ -157,6 +176,18 @@ const Audio = ({ children }: AudioProps) => {
     audio.currentTime = Math.max(0, audio.currentTime - step);
   }, []);
 
+  const nextTrack = useCallback(() => {
+    const currIndex = audioState.trackIndex;
+    const newTrackIndex = currIndex === trackCount - 1 ? 0 : currIndex + 1;
+    dispatch({ type: 'track', payload: newTrackIndex });
+  }, [playlist, audioState.trackIndex]);
+
+  const prevTrack = useCallback(() => {
+    const currIndex = audioState.trackIndex;
+    const newTrackIndex = currIndex === trackCount - 1 ? 0 : currIndex + 1;
+    dispatch({ type: 'track', payload: newTrackIndex });
+  }, [playlist, audioState.trackIndex]);
+
   const audioContext: AudioContext = {
     ...audioState,
     play,
@@ -168,16 +199,23 @@ const Audio = ({ children }: AudioProps) => {
     setPlaybackRate,
     forwardTrack,
     rewindTrack,
+    nextTrack,
+    prevTrack,
+    playlist,
     audioRef,
   };
 
-  /**
-   * Is the ref to the audio element necessary?
-   */
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (audio.paused === audioState.playing) audio.play();
+  }, [playlist, audioState.trackIndex]);
 
   return (
     <>
       <audio
+        key={audioState.trackIndex}
         controls
         ref={audioRef}
         loop={audioState.loop}
@@ -191,6 +229,11 @@ const Audio = ({ children }: AudioProps) => {
         onWaiting={dispatch.bind(null, { type: 'loading', payload: true })}
         onLoadStart={dispatch.bind(null, { type: 'loading', payload: true })}
       >
+        {track !== null && <source src={track.src} type={track.type} />}
+        {track?.fallbacks &&
+          track.fallbacks.map(fallback => (
+            <source key={fallback.src} src={fallback.src} type={fallback.type} />
+          ))}
         <source src='/1.mp3' />
       </audio>
       {children(audioContext)}
