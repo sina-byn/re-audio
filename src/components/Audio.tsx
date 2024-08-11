@@ -1,7 +1,7 @@
 import { useRef, useMemo, useEffect, useReducer, useCallback } from 'react';
 
 // * utils
-import { generateShuffledArray } from '../utils';
+import { isNullish, generateShuffledArray } from '../utils';
 
 // * reducers
 const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
@@ -60,6 +60,12 @@ type AudioEvent = React.SyntheticEvent<HTMLAudioElement, Event>;
 
 type AudioProps = {
   playlist: AudioTrack[];
+  defaultMuted?: boolean;
+  defaultLoop?: boolean;
+  defaultShuffle?: boolean;
+  defaultVolume?: number;
+  defaultPlaybackRate?: number;
+  defaultTrackIndex?: number;
   children: (audioContext: AudioContext) => React.ReactNode;
 };
 
@@ -114,8 +120,24 @@ type AudioAction =
       payload: number;
     };
 
-const Audio = ({ playlist, children }: AudioProps) => {
-  const [audioState, dispatch] = useReducer(reducer, DEFAULT_AUDIO_STATE);
+const Audio = ({
+  playlist,
+  defaultMuted,
+  defaultLoop,
+  defaultShuffle,
+  defaultVolume,
+  defaultPlaybackRate,
+  defaultTrackIndex = 0,
+  children,
+}: AudioProps) => {
+  const [audioState, dispatch] = useReducer(reducer, {
+    ...DEFAULT_AUDIO_STATE,
+    muted: !!defaultMuted,
+    loop: !!defaultLoop,
+    shuffle: !!defaultShuffle,
+    trackIndex: defaultTrackIndex % playlist.length,
+  });
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const track = playlist[audioState.trackIndex];
   const trackCount = playlist.length;
@@ -193,8 +215,6 @@ const Audio = ({ playlist, children }: AudioProps) => {
 
   const nextTrack = useCallback(() => {
     if (audioState.shuffle) {
-      console.log('here');
-
       const newShuffledIndex = shuffledIndex === trackCount - 1 ? 0 : shuffledIndex + 1;
       dispatch({ type: 'track', payload: suhffledPlaylist[newShuffledIndex] });
       return;
@@ -240,6 +260,9 @@ const Audio = ({ playlist, children }: AudioProps) => {
     const audio = audioRef.current;
     if (!audio) return;
 
+    if (!isNullish(defaultVolume)) setVolume(defaultVolume!);
+    if (!isNullish(defaultPlaybackRate)) setPlaybackRate(defaultPlaybackRate!);
+
     if (audio.paused === audioState.playing) audio.play();
   }, [playlist, audioState.trackIndex]);
 
@@ -265,7 +288,6 @@ const Audio = ({ playlist, children }: AudioProps) => {
           track.fallbacks.map(fallback => (
             <source key={fallback.src} src={fallback.src} type={fallback.type} />
           ))}
-        <source src='/1.mp3' />
       </audio>
       {children(audioContext)}
     </>
