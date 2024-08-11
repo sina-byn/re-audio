@@ -1,6 +1,8 @@
 // * types
 type TimeChunk = string | number;
 
+export const isNullish = (value: any) => [null, undefined].includes(value);
+
 export const formatTime = (time: number) => {
   const hours = Math.floor(time / 3600);
   const minutes = Math.floor((time - hours * 3600) / 60);
