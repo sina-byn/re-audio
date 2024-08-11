@@ -1,4 +1,7 @@
-import { useRef, useEffect, useReducer, useCallback } from 'react';
+import { useRef, useMemo, useEffect, useReducer, useCallback } from 'react';
+
+// * utils
+import { generateShuffledArray } from '../utils';
 
 // * reducers
 const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
@@ -10,10 +13,12 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
         return { ...audioState, playing: false };
       case 'play/pause':
         return { ...audioState, playing: !audioState.playing };
-      case 'loop':
-        return { ...audioState, loop: !audioState.loop };
       case 'muted':
         return { ...audioState, muted: !audioState.muted };
+      case 'loop':
+        return { ...audioState, loop: !audioState.loop };
+      case 'shuffle':
+        return { ...audioState, shuffle: !audioState.shuffle };
     }
   }
 
@@ -44,6 +49,7 @@ const DEFAULT_AUDIO_STATE: AudioState = {
   currentTime: 0,
   muted: false,
   loop: false,
+  shuffle: true,
   volume: 100,
   playbackRate: 1,
   trackIndex: 0,
@@ -72,6 +78,7 @@ type AudioState = {
   currentTime: number;
   muted: boolean;
   loop: boolean;
+  shuffle: boolean;
   volume: number;
   playbackRate: number;
   trackIndex: number;
@@ -83,8 +90,9 @@ type AudioContext = AudioState & {
   play: () => void;
   pause: () => void;
   togglePlay: () => void;
-  toggleLoop: () => void;
   toggleMuted: () => void;
+  toggleLoop: () => void;
+  toggleShuffle: () => void;
   setVolume: (newVolume: number) => void;
   forwardTrack: (step?: number) => void;
   rewindTrack: (step?: number) => void;
@@ -99,6 +107,7 @@ type AudioAction =
   | 'play/pause'
   | 'muted'
   | 'loop'
+  | 'shuffle'
   | { type: 'loading'; payload: boolean }
   | {
       type: 'track' | 'time' | 'duration' | 'volume' | 'playbackRate';
@@ -110,6 +119,10 @@ const Audio = ({ playlist, children }: AudioProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const track = playlist[audioState.trackIndex];
   const trackCount = playlist.length;
+
+  // prettier-ignore
+  const suhffledPlaylist = useMemo(() => generateShuffledArray(playlist.length), [playlist, audioState.shuffle]);
+  const shuffledIndex = suhffledPlaylist.indexOf(audioState.trackIndex);
 
   const timeUpdateHandler = (e: AudioEvent) => {
     const audio = e.currentTarget;
@@ -144,6 +157,8 @@ const Audio = ({ playlist, children }: AudioProps) => {
 
   const toggleLoop = useCallback(() => dispatch('loop'), []);
 
+  const toggleShuffle = useCallback(() => dispatch('shuffle'), []);
+
   const setVolume = useCallback((newVolume: number) => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -177,16 +192,31 @@ const Audio = ({ playlist, children }: AudioProps) => {
   }, []);
 
   const nextTrack = useCallback(() => {
+    if (audioState.shuffle) {
+      console.log('here');
+
+      const newShuffledIndex = shuffledIndex === trackCount - 1 ? 0 : shuffledIndex + 1;
+      dispatch({ type: 'track', payload: suhffledPlaylist[newShuffledIndex] });
+      return;
+    }
+
     const currIndex = audioState.trackIndex;
     const newTrackIndex = currIndex === trackCount - 1 ? 0 : currIndex + 1;
+
     dispatch({ type: 'track', payload: newTrackIndex });
-  }, [playlist, audioState.trackIndex]);
+  }, [playlist, audioState.shuffle, audioState.trackIndex]);
 
   const prevTrack = useCallback(() => {
+    if (audioState.shuffle) {
+      const newShuffledIndex = shuffledIndex === 0 ? trackCount - 1 : shuffledIndex - 1;
+      dispatch({ type: 'track', payload: suhffledPlaylist[newShuffledIndex] });
+      return;
+    }
+
     const currIndex = audioState.trackIndex;
-    const newTrackIndex = currIndex === trackCount - 1 ? 0 : currIndex + 1;
+    const newTrackIndex = currIndex === 0 ? trackCount - 1 : currIndex - 1;
     dispatch({ type: 'track', payload: newTrackIndex });
-  }, [playlist, audioState.trackIndex]);
+  }, [playlist, audioState.shuffle, audioState.trackIndex]);
 
   const audioContext: AudioContext = {
     ...audioState,
@@ -195,6 +225,7 @@ const Audio = ({ playlist, children }: AudioProps) => {
     togglePlay,
     toggleMuted,
     toggleLoop,
+    toggleShuffle,
     setVolume,
     setPlaybackRate,
     forwardTrack,
