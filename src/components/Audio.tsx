@@ -151,27 +151,26 @@ const Audio = ({
   const suhffledPlaylist = useMemo(() => generateShuffledArray(playlist.length), [playlist, audioState.shuffle]);
   const shuffledIndex = suhffledPlaylist.indexOf(audioState.trackIndex);
 
-  const endHandler = () => {
+  const endHandler = useCallback(() => {
     if (audioState.repeat === 'playlist') nextTrack();
-  };
+  }, [playlist, audioState.shuffle, audioState.trackIndex]);
 
-  const timeUpdateHandler = (e: AudioEvent) => {
+  const timeUpdateHandler = useCallback((e: AudioEvent) => {
     const audio = e.currentTarget;
     dispatch({ type: 'time', payload: audio.currentTime });
-  };
+  }, []);
 
-  const volumeChangeHandler = (e: AudioEvent) => {
+  const volumeChangeHandler = useCallback((e: AudioEvent) => {
     const audio = e.currentTarget;
-
     dispatch({ type: 'volume', payload: audio.volume });
-  };
+  }, []);
 
-  const metadataLoadHandler = (e: AudioEvent) => {
+  const metadataLoadHandler = useCallback((e: AudioEvent) => {
     const audio = e.currentTarget;
 
     dispatch({ type: 'duration', payload: audio.duration });
     dispatch({ type: 'volume', payload: audio.volume });
-  };
+  }, []);
 
   const play = useCallback(() => audioRef.current?.play(), []);
 
