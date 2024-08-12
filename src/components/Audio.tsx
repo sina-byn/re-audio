@@ -257,14 +257,16 @@ const Audio = ({
   };
 
   useEffect(() => {
+    if (!isNullish(defaultVolume)) setVolume(defaultVolume!);
+    if (!isNullish(defaultPlaybackRate)) setPlaybackRate(defaultPlaybackRate!);
+  }, []);
+
+  useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (!isNullish(defaultVolume)) setVolume(defaultVolume!);
-    if (!isNullish(defaultPlaybackRate)) setPlaybackRate(defaultPlaybackRate!);
-
-    if (audio.paused === audioState.playing) audio.play();
-  }, [playlist, audioState.trackIndex]);
+    audio.play();
+  }, [audioState.trackIndex]);
 
   return (
     <>
