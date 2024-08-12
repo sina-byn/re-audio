@@ -15,8 +15,6 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
         return { ...audioState, playing: !audioState.playing };
       case 'muted':
         return { ...audioState, muted: !audioState.muted };
-      case 'loop':
-        return { ...audioState, loop: !audioState.loop };
       case 'shuffle':
         return { ...audioState, shuffle: !audioState.shuffle };
     }
@@ -29,6 +27,8 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
       return { ...audioState, trackIndex: payload };
     case 'loading':
       return { ...audioState, loading: payload };
+    case 'repeat':
+      return { ...audioState, repeat: payload };
     case 'volume':
       return { ...audioState, volume: Math.trunc(payload * 100) };
     case 'duration':
@@ -48,20 +48,22 @@ const DEFAULT_AUDIO_STATE: AudioState = {
   timeLeft: 0,
   currentTime: 0,
   muted: false,
-  loop: false,
   shuffle: true,
+  repeat: 'playlist',
   volume: 100,
   playbackRate: 1,
   trackIndex: 0,
 };
 
 // * types
+type RepeatMode = 'track' | 'playlist';
+
 type AudioEvent = React.SyntheticEvent<HTMLAudioElement, Event>;
 
 type AudioProps = {
   playlist: AudioTrack[];
   defaultMuted?: boolean;
-  defaultLoop?: boolean;
+  defaultRepeat?: RepeatMode;
   defaultShuffle?: boolean;
   defaultVolume?: number;
   defaultPlaybackRate?: number;
@@ -83,8 +85,8 @@ type AudioState = {
   timeLeft: number;
   currentTime: number;
   muted: boolean;
-  loop: boolean;
   shuffle: boolean;
+  repeat: RepeatMode;
   volume: number;
   playbackRate: number;
   trackIndex: number;
@@ -97,8 +99,8 @@ type AudioContext = AudioState & {
   pause: () => void;
   togglePlay: () => void;
   toggleMuted: () => void;
-  toggleLoop: () => void;
   toggleShuffle: () => void;
+  setRepeat: (repeat: RepeatMode) => void;
   setVolume: (newVolume: number) => void;
   forwardTrack: (step?: number) => void;
   rewindTrack: (step?: number) => void;
@@ -112,9 +114,9 @@ type AudioAction =
   | 'pause'
   | 'play/pause'
   | 'muted'
-  | 'loop'
   | 'shuffle'
   | { type: 'loading'; payload: boolean }
+  | { type: 'repeat'; payload: RepeatMode }
   | {
       type: 'track' | 'time' | 'duration' | 'volume' | 'playbackRate';
       payload: number;
@@ -123,17 +125,17 @@ type AudioAction =
 const Audio = ({
   playlist,
   defaultMuted,
-  defaultLoop,
   defaultShuffle,
   defaultVolume,
   defaultPlaybackRate,
+  defaultRepeat = 'playlist',
   defaultTrackIndex = 0,
   children,
 }: AudioProps) => {
   const [audioState, dispatch] = useReducer(reducer, {
     ...DEFAULT_AUDIO_STATE,
     muted: !!defaultMuted,
-    loop: !!defaultLoop,
+    repeat: defaultRepeat,
     shuffle: !!defaultShuffle,
     trackIndex: defaultTrackIndex % playlist.length,
   });
@@ -145,6 +147,10 @@ const Audio = ({
   // prettier-ignore
   const suhffledPlaylist = useMemo(() => generateShuffledArray(playlist.length), [playlist, audioState.shuffle]);
   const shuffledIndex = suhffledPlaylist.indexOf(audioState.trackIndex);
+
+  const endHandler = () => {
+    if (audioState.repeat === 'playlist') nextTrack();
+  };
 
   const timeUpdateHandler = (e: AudioEvent) => {
     const audio = e.currentTarget;
@@ -177,7 +183,8 @@ const Audio = ({
 
   const toggleMuted = useCallback(() => dispatch('muted'), []);
 
-  const toggleLoop = useCallback(() => dispatch('loop'), []);
+  // prettier-ignore
+  const setRepeat = useCallback((repeat: RepeatMode) => dispatch({ type: 'repeat', payload: repeat }), []);
 
   const toggleShuffle = useCallback(() => dispatch('shuffle'), []);
 
@@ -244,8 +251,8 @@ const Audio = ({
     pause,
     togglePlay,
     toggleMuted,
-    toggleLoop,
     toggleShuffle,
+    setRepeat,
     setVolume,
     setPlaybackRate,
     forwardTrack,
@@ -274,8 +281,9 @@ const Audio = ({
         key={audioState.trackIndex}
         controls
         ref={audioRef}
-        loop={audioState.loop}
         muted={audioState.muted}
+        loop={audioState.repeat === 'track'}
+        onEnded={endHandler}
         onPlay={dispatch.bind(null, 'play')}
         onPause={dispatch.bind(null, 'pause')}
         onTimeUpdate={timeUpdateHandler}
