@@ -68,6 +68,7 @@ type AudioProps = {
   defaultVolume?: number;
   defaultPlaybackRate?: number;
   defaultTrackIndex?: number;
+  startMargin?: number | boolean;
   children: (audioContext: AudioContext) => React.ReactNode;
 };
 
@@ -130,6 +131,7 @@ const Audio = ({
   defaultPlaybackRate,
   defaultRepeat = 'playlist',
   defaultTrackIndex = 0,
+  startMargin = 5,
   children,
 }: AudioProps) => {
   const [audioState, dispatch] = useReducer(reducer, {
@@ -234,6 +236,14 @@ const Audio = ({
   }, [playlist, audioState.shuffle, audioState.trackIndex]);
 
   const prevTrack = useCallback(() => {
+    const audio = audioRef.current;
+    const margin = typeof startMargin === 'boolean' ? 5 : startMargin;
+
+    if (audio && startMargin !== false && audio.currentTime > margin) {
+      audio.currentTime = 0;
+      return;
+    }
+
     if (audioState.shuffle) {
       const newShuffledIndex = shuffledIndex === 0 ? trackCount - 1 : shuffledIndex - 1;
       dispatch({ type: 'track', payload: suhffledPlaylist[newShuffledIndex] });
