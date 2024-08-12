@@ -299,7 +299,6 @@ const Audio = ({
     <>
       <audio
         key={audioState.trackIndex}
-        controls
         ref={audioRef}
         muted={audioState.muted}
         loop={audioState.repeat === 'track'}
