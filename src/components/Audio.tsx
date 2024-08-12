@@ -149,7 +149,8 @@ const Audio = ({
 
   // prettier-ignore
   const suhffledPlaylist = useMemo(() => generateShuffledArray(playlist.length), [playlist, audioState.shuffle]);
-  const shuffledIndex = suhffledPlaylist.indexOf(audioState.trackIndex);
+  // prettier-ignore
+  const shuffledIndex = useMemo(() => suhffledPlaylist.indexOf(audioState.trackIndex), [suhffledPlaylist, audioState.trackIndex]);
 
   const endHandler = useCallback(() => {
     if (audioState.repeat === 'playlist') nextTrack();
