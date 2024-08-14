@@ -135,7 +135,7 @@ type AudioAction =
       payload: number;
     };
 
-const Audio = ({
+export const Audio = ({
   playlist,
   defaultMuted,
   defaultShuffle,
@@ -340,5 +340,3 @@ export const useAudio = () => {
 
   return context;
 };
-
-export default Audio;
