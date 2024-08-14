@@ -119,6 +119,7 @@ type AudioContext = AudioState & {
   rewindTrack: (step?: number) => void;
   nextTrack: () => void;
   prevTrack: () => void;
+  playTrack: (trackIndex: number) => void;
   setPlaybackRate: (newPlaybackRate: number) => void;
 };
 
@@ -275,6 +276,9 @@ export const Audio = ({
     dispatch({ type: 'track', payload: newTrackIndex });
   }, [playlist, audioState.shuffle, audioState.trackIndex]);
 
+  // prettier-ignore
+  const playTrack = useCallback((trackIndex: number) => dispatch({ type: 'track', payload: trackIndex }), []);
+
   const context: AudioContext = {
     ...audioState,
     play,
@@ -290,6 +294,7 @@ export const Audio = ({
     rewindTrack,
     nextTrack,
     prevTrack,
+    playTrack,
     playlist,
     audioRef,
   };
