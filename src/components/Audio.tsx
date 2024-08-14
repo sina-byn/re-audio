@@ -1,7 +1,18 @@
-import { useRef, useMemo, useEffect, useReducer, useCallback } from 'react';
+import {
+  useRef,
+  useMemo,
+  useEffect,
+  useReducer,
+  useContext,
+  useCallback,
+  createContext,
+} from 'react';
 
 // * utils
 import { isNullish, generateShuffledArray } from '../utils';
+
+// * context
+const audioContext = createContext<AudioContext | null>(null);
 
 // * reducers
 const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
@@ -264,7 +275,7 @@ const Audio = ({
     dispatch({ type: 'track', payload: newTrackIndex });
   }, [playlist, audioState.shuffle, audioState.trackIndex]);
 
-  const audioContext: AudioContext = {
+  const context: AudioContext = {
     ...audioState,
     play,
     pause,
@@ -296,7 +307,7 @@ const Audio = ({
   }, [audioState.trackIndex]);
 
   return (
-    <>
+    <audioContext.Provider value={context}>
       <audio
         key={audioState.trackIndex}
         ref={audioRef}
@@ -318,9 +329,16 @@ const Audio = ({
             <source key={fallback.src} src={fallback.src} type={fallback.type} />
           ))}
       </audio>
-      {children(audioContext)}
-    </>
+      {children(context)}
+    </audioContext.Provider>
   );
+};
+
+export const useAudio = () => {
+  const context = useContext(audioContext);
+  if (isNullish(context)) throw new Error('useAudio must be used within an Audio component');
+
+  return context;
 };
 
 export default Audio;
