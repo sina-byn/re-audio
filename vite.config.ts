@@ -25,6 +25,19 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    dts({ rollupTypes: true, tsconfigPath: './tsconfig.app.json', outDir: 'dist' }),
+    dts({
+      outDir: 'dist',
+      rollupTypes: true,
+      tsconfigPath: './tsconfig.app.json',
+      exclude: ['src/*.tsx', 'node_modules/**'],
+      beforeWriteFile: (_, content) => ({
+        content: content
+          .replace(/AudioContext_2/g, 'AudioContext')
+          .replace(/Audio_2\s*as\s*/g, '')
+          .replace(/Audio_2/g, 'Audio')
+          .replace(/as\s*JSX_2\s*/g, '')
+          .replace(/JSX_2/g, 'JSX'),
+      }),
+    }),
   ],
 });
