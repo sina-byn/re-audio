@@ -67,11 +67,11 @@ const DEFAULT_AUDIO_STATE: AudioState = {
 };
 
 // * types
-type RepeatMode = 'track' | 'playlist';
+export type RepeatMode = 'track' | 'playlist';
 
 type AudioEvent = React.SyntheticEvent<HTMLAudioElement, Event>;
 
-type AudioProps = {
+export type AudioProps = {
   playlist: AudioTrack[];
   defaultMuted?: boolean;
   defaultRepeat?: RepeatMode;
@@ -83,14 +83,14 @@ type AudioProps = {
   children: (audioContext: AudioContext) => React.ReactNode;
 };
 
-type AudioTrack = {
+export type AudioTrack = {
   id: string | number;
   src: string;
   type?: string;
   fallbacks?: Pick<AudioTrack, 'src' | 'type'>[];
 } & Record<string, unknown>;
 
-type AudioState = {
+export type AudioState = {
   playing: boolean;
   loading: boolean;
   duration: number;
@@ -104,7 +104,7 @@ type AudioState = {
   trackIndex: number;
 };
 
-type AudioContext = AudioState & {
+export type AudioContext = AudioState & {
   audioRef: React.RefObject<HTMLAudioElement>;
   playlist: AudioTrack[];
   play: () => void;
