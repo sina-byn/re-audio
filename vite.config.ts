@@ -9,7 +9,7 @@ export default defineConfig({
   build: {
     copyPublicDir: false,
     lib: {
-      entry: resolve(__dirname, 'src/lib.ts'),
+      entry: resolve(__dirname, 'src/lib/index.ts'),
       name: 're-audio',
       fileName: 're-audio',
     },
