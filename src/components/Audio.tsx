@@ -308,7 +308,7 @@ export const Audio = ({
     const audio = audioRef.current;
     if (!audio) return;
 
-    audio.play();
+    if ('userAcitvation' in navigator && navigator.userActivation.hasBeenActive) audio.play();
   }, [audioState.trackIndex]);
 
   return (
