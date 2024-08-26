@@ -52,7 +52,7 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
 };
 
 // * data
-const DEFAULT_AUDIO_STATE: AudioState = {
+const DEFAULT_AUDIO_STATE: Omit<AudioState, 'currentTrack'> = {
   playing: false,
   loading: false,
   duration: 0,
@@ -102,6 +102,7 @@ export type AudioState = {
   volume: number;
   playbackRate: number;
   trackIndex: number;
+  currentTrack: AudioTrack;
 };
 
 export type AudioContext = AudioState & {
@@ -153,6 +154,7 @@ export const Audio = ({
     repeat: defaultRepeat,
     shuffle: !!defaultShuffle,
     trackIndex: defaultTrackIndex % playlist.length,
+    currentTrack: playlist[defaultTrackIndex % playlist.length],
   });
 
   const audioRef = useRef<HTMLAudioElement>(null);
