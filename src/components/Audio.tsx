@@ -345,5 +345,5 @@ export const useAudio = () => {
   const context = useContext(audioContext);
   if (isNullish(context)) throw new Error('useAudio must be used within an Audio component');
 
-  return context;
+  return context!;
 };
