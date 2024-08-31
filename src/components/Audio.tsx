@@ -161,6 +161,8 @@ export const Audio = ({
   const track = playlist[audioState.trackIndex];
   const trackCount = playlist.length;
 
+  const initialRender = useRef<boolean>(true);
+
   // prettier-ignore
   const suhffledPlaylist = useMemo(() => generateShuffledArray(playlist.length), [playlist, audioState.shuffle]);
   // prettier-ignore
@@ -309,6 +311,11 @@ export const Audio = ({
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+
+    if (initialRender.current) {
+      initialRender.current = false;
+      return;
+    }
 
     if ('userActivation' in navigator && navigator.userActivation.hasBeenActive) audio.play();
   }, [audioState.trackIndex]);
