@@ -71,6 +71,8 @@ export type RepeatMode = 'track' | 'playlist';
 
 type AudioEvent = React.SyntheticEvent<HTMLAudioElement, Event>;
 
+type AudioChildren = React.ReactNode | ((audioContext: AudioContext) => React.ReactNode);
+
 export type AudioProps = {
   playlist: AudioTrack[];
   defaultMuted?: boolean;
@@ -80,7 +82,7 @@ export type AudioProps = {
   defaultPlaybackRate?: number;
   defaultTrackIndex?: number;
   startMargin?: number | boolean;
-  children: React.ReactNode | ((audioContext: AudioContext) => React.ReactNode);
+  children: AudioChildren;
 };
 
 export type AudioTrack = {
