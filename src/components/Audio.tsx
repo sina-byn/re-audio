@@ -80,7 +80,7 @@ export type AudioProps = {
   defaultPlaybackRate?: number;
   defaultTrackIndex?: number;
   startMargin?: number | boolean;
-  children: (audioContext: AudioContext) => React.ReactNode;
+  children: React.ReactNode | ((audioContext: AudioContext) => React.ReactNode);
 };
 
 export type AudioTrack = {
@@ -343,7 +343,7 @@ export const Audio = ({
             <source key={fallback.src} src={fallback.src} type={fallback.type} />
           ))}
       </audio>
-      {children(context)}
+      {typeof children === 'function' ? children(context) : children}
     </audioContext.Provider>
   );
 };
