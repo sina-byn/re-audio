@@ -1,18 +1,25 @@
+// * assets
+// @ts-ignore
+import _1_mp3 from '@site/static/audio/1.mp3';
+// @ts-ignore
+import _2_mp3 from '@site/static/audio/2.mp3';
+// @ts-ignore
+import _3_mp3 from '@site/static/audio/3.mp3';
+
 // * components
 import CodeBlock from '../components/CodeBlock';
 import { Audio, formatTime } from '../components/ReAudio';
 
 // * icons
 import {
+  IconVolume,
+  IconVolume2,
   IconPlayerPlayFilled,
   IconPlayerPauseFilled,
   IconPlayerSkipBackFilled,
   IconPlayerTrackNextFilled,
   IconPlayerTrackPrevFilled,
   IconPlayerSkipForwardFilled,
-  IconVolume,
-  IconVolume2,
-  IconVolume3,
 } from '@tabler/icons-react';
 
 // * styles
@@ -128,9 +135,9 @@ const Basic = () => {
       <div className='re-audio-sample'>
         <Audio
           playlist={[
-            { id: 1, src: 'audio/1.mp3', name: 'for-her-chill' },
-            { id: 2, src: 'audio/2.mp3', name: 'trap-type-beat-rap-instrumental-riff' },
-            { id: 3, src: 'audio/3.mp3', name: 'whip-afro-dancehall' },
+            { id: 1, src: _1_mp3, name: 'for-her-chill' },
+            { id: 2, src: _2_mp3, name: 'trap-type-beat-rap-instrumental-riff' },
+            { id: 3, src: _3_mp3, name: 'whip-afro-dancehall' },
           ]}
         >
           {({
