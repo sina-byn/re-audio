@@ -24,7 +24,16 @@ The `<Audio />` component provides the core functionality.
 
 ### Default Repeat
 
-Specifies the default [repeat behavior](#set-repeat) of the audio player.
+Specifies the default [repeat behavior](#repeat-behavior) of the audio player.
+
+### Repeat Behavior
+
+There are two repeat behaviors available :
+1. `'track'` - Repeats the currently playing track
+2. `'playlist'` - Repeats the entire playlist
+
+If not specified, the default behavior is `'playlist'`.
+<p>The repeat behavior can be controlled using the `setRepeat` method.</p>
 
 ### Start Margin
 
