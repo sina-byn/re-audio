@@ -60,7 +60,7 @@ export default function Home(): JSX.Element {
                 className='animate-rotate absolute z-0 size-10 border-solid border-darker border-t-primary border-r-primary'
               />
 
-              <CodeBlock language='bash' className='w-full sm:w-96 mb-0'>
+              <CodeBlock language='bash' className='w-full sm:w-96 !mb-0'>
                 npm i re-audio
               </CodeBlock>
             </div>
