@@ -11,7 +11,13 @@ import Grid from '../components/landing/Grid';
 import Separator from '../components/Separator';
 
 // * icons
-import { IconCode, IconAdjustments, IconBrandTypescript } from '@tabler/icons-react';
+import {
+  IconCode,
+  IconBrandNpm,
+  IconBrandGithub,
+  IconAdjustments,
+  IconBrandTypescript,
+} from '@tabler/icons-react';
 
 export default function Home(): JSX.Element {
   return (
@@ -34,6 +40,7 @@ export default function Home(): JSX.Element {
         <div className='flex items-center justify-center z-20 py-32'>
           <div className='flex flex-col items-center gap-y-6'>
             <img src='img/logo.svg' alt='' className='w-72' />
+
             <hgroup>
               <h1 className='hidden'>ReAudio</h1>
               <p className='max-w-96 text-2xl text-center font-semibold leading-10 max-md:px-4'>
@@ -71,6 +78,24 @@ export default function Home(): JSX.Element {
             >
               Getting Started
             </Link>
+
+            <div className='flex items-center gap-x-6'>
+              <a
+                target='_blank'
+                rel='noopener nofollow noreferrer'
+                href='https://github.com/sina-byn/re-audio'
+              >
+                <IconBrandGithub size={30} className='text-white' />
+              </a>
+
+              <a
+                target='_blank'
+                rel='noopener nofollow noreferrer'
+                href='https://www.npmjs.com/package/re-audio'
+              >
+                <IconBrandNpm size={35} className='text-white' />
+              </a>
+            </div>
 
             <Separator className='mt-10 mb-4' />
 
