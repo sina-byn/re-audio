@@ -26,7 +26,7 @@
   "author": "Sina Bayandorian <sina.sina.bayan@protonmail.com> (https://portfolio-sina-byn.vercel.app/)",
   "description": "A highly customizable React audio player library with support for modern web audio features and seamless integration into any React application.",
   "repository": "github:sina-byn/re-audio",
-  "homepage": "https://github.com/sina-byn/re-audio#readme",
+  "homepage": "https://sina-byn.github.io/re-audio/",
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
