@@ -128,9 +128,9 @@ const Basic = () => {
       <div className='re-audio-sample'>
         <Audio
           playlist={[
-            { id: 1, src: '/audio/1.mp3', name: 'for-her-chill' },
-            { id: 2, src: '/audio/2.mp3', name: 'trap-type-beat-rap-instrumental-riff' },
-            { id: 3, src: '/audio/3.mp3', name: 'whip-afro-dancehall' },
+            { id: 1, src: 'audio/1.mp3', name: 'for-her-chill' },
+            { id: 2, src: 'audio/2.mp3', name: 'trap-type-beat-rap-instrumental-riff' },
+            { id: 3, src: 'audio/3.mp3', name: 'whip-afro-dancehall' },
           ]}
         >
           {({

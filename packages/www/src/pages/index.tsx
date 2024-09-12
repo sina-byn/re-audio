@@ -26,14 +26,14 @@ export default function Home(): JSX.Element {
           <img
             alt=''
             width={1920}
-            src='/img/sound-wave.svg'
+            src='img/sound-wave.svg'
             className='shrink-0 h-96 opacity-15 mt-40'
           />
         </div>
 
         <div className='flex items-center justify-center z-20 py-32'>
           <div className='flex flex-col items-center gap-y-6'>
-            <img src='/img/logo.svg' alt='' className='w-72' />
+            <img src='img/logo.svg' alt='' className='w-72' />
             <hgroup>
               <h1 className='hidden'>ReAudio</h1>
               <p className='max-w-96 text-2xl text-center font-semibold leading-10 max-md:px-4'>
