@@ -1,13 +1,14 @@
-import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+
+import { themes as prismThemes } from 'prism-react-renderer';
 
 // * plugins
 import tailwindPlugin from './plugins/tailwind-config.cjs';
 
 const config: Config = {
-  title: 'Re-Audio',
-  tagline: 'Dinosaurs are cool',
+  title: 'ReAudio',
+  tagline: 'ReAudio makes creating audio players in React easier than ever before',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -61,12 +62,12 @@ const config: Config = {
       respectPrefersColorScheme: false,
     },
     // Replace with your project's social card
-    // image: 'img/docusaurus-social-card.jpg',
+    image: 'img/social-card.jpg',
     navbar: {
       title: '',
       logo: {
         src: 'img/logo.svg',
-        alt: 'Re-Audio Logo',
+        alt: 'ReAudio Logo',
         style: { width: '100px' },
       },
       items: [
