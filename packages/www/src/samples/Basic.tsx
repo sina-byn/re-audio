@@ -40,6 +40,7 @@ const App = () => {
           ]}
         >
           {({
+            loading,
             trackIndex,
             playlist,
             playing,
@@ -105,19 +106,23 @@ const App = () => {
                 />
               </div>
 
-              <div className='flex items-center gap-x-2 mt-4'>
-                <IconVolume2 />
+              <div className='flex items-center justify-between gap-x-4'>
+                <div className='flex items-center gap-x-2 mt-4'>
+                  <IconVolume2 />
 
-                <input
-                  type='range'
-                  min='0'
-                  max='100'
-                  className='w-full md:w-[150px]'
-                  value={volume}
-                  onChange={e => setVolume(+e.currentTarget.value)}
-                />
+                  <input
+                    type='range'
+                    min='0'
+                    max='100'
+                    className='w-full md:w-[150px]'
+                    value={volume}
+                    onChange={e => setVolume(+e.currentTarget.value)}
+                  />
 
-                <IconVolume />
+                  <IconVolume />
+                </div>
+
+                {!loading && <span className='max-lg:text-sm mt-2'>loading...</span>}
               </div>
             </div>
           )}
@@ -141,6 +146,7 @@ const Basic = () => {
           ]}
         >
           {({
+            loading,
             trackIndex,
             playlist,
             playing,
@@ -206,19 +212,23 @@ const Basic = () => {
                 />
               </div>
 
-              <div className='flex items-center gap-x-2 mt-4'>
-                <IconVolume2 />
+              <div className='flex items-center justify-between gap-x-4'>
+                <div className='flex items-center gap-x-2 mt-4'>
+                  <IconVolume2 />
 
-                <input
-                  type='range'
-                  min='0'
-                  max='100'
-                  className='w-full md:w-[150px]'
-                  value={volume}
-                  onChange={e => setVolume(+e.currentTarget.value)}
-                />
+                  <input
+                    type='range'
+                    min='0'
+                    max='100'
+                    className='w-full md:w-[150px]'
+                    value={volume}
+                    onChange={e => setVolume(+e.currentTarget.value)}
+                  />
 
-                <IconVolume />
+                  <IconVolume />
+                </div>
+
+                {!loading && <span className='max-lg:text-sm mt-2'>loading...</span>}
               </div>
             </div>
           )}
