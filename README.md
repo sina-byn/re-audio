@@ -1,30 +1,79 @@
-# React + TypeScript + Vite
+# re-audio [![NPM version](https://img.shields.io/npm/v/re-audio.svg?style=flat)](https://www.npmjs.com/package/re-audio) [![NPM monthly downloads](https://img.shields.io/npm/dm/re-audio.svg?style=flat)](https://npmjs.org/package/re-audio) [![NPM total downloads](https://img.shields.io/npm/dt/re-audio.svg?style=flat)](https://npmjs.org/package/re-audio) 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Creating audio players in React has never been easier
 
-Currently, two official plugins are available:
+![re-audio banner](/public/banner.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> Make sure to visit the documentation website at [https://sina-byn.github.io/re-audio/](https://sina-byn.github.io/re-audio/)
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+## Installation
+```bash
+npm i --save @sina_byn/re-audio
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Usage
+
+```tsx
+// * AudioPlayer.tsx
+
+import { Audio, formatTime } from 're-audio';
+
+// * components
+import PlayBackControls from './PlayBackControls';
+
+const AudioPlayer = () => {
+    return () => (
+        <Audio 
+          playlist={[
+            { id: 1, src: '/audio/1.mp3', name: 'for-her-chill' },
+            { id: 2, src: '/audio/2.mp3', name: 'trap-type-beat-rap-instrumental-riff' },
+            { id: 3, src: '/audio/3.mp3', name: 'whip-afro-dancehall' },
+          ]}
+        >
+            {audioContext => (
+                <div>
+                    <header style={{ display: 'flex', gap: '1rem' }}>
+                        <span>{formatTime(audioContext.currentTime)}</span>
+                        <span>/</span>
+                        <span>{formatTime(audioContext.duration)}</span>
+                    </header>
+
+                    <footer style={{ display: 'flex', gap: '1rem' }}>
+                        <PlayBackControls />
+                    </footer>
+                </div>
+            )}
+        </Audio>
+    );
+};
+
+export default AudioPlayer;
+```
+
+```tsx
+// * PlayBackControls.tsx
+
+import { useAudio } from 're-audio';
+
+const PlayBackControls = () => {
+    const { playing, togglePlay, prevTrack, nextTrack } = useAudio();
+
+    return (
+        <>
+            <button type='button' onClick={prevTrack}>
+                prev
+            </button>
+
+            <button type='button' onClick={togglePlay}>
+                {playing ? 'pause' : 'play'}
+            </button>
+
+            <button type='button' onClick={nextTrack}>
+                next
+            </button>
+        </>
+    )
+};
+
+export default PlayBackControls;
+```
