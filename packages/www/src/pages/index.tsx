@@ -68,7 +68,7 @@ export default function Home(): JSX.Element {
               />
 
               <CodeBlock language='bash' className='w-full sm:w-96 !mb-0'>
-                npm i re-audio
+                npm i @sina_byn/re-audio
               </CodeBlock>
             </div>
 
@@ -91,7 +91,7 @@ export default function Home(): JSX.Element {
               <a
                 target='_blank'
                 rel='noopener nofollow noreferrer'
-                href='https://www.npmjs.com/package/re-audio'
+                href='https://www.npmjs.com/package/@sina_byn/re-audio'
               >
                 <IconBrandNpm size={35} className='text-white' />
               </a>
