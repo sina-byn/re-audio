@@ -1,4 +1,4 @@
-# re-audio [![NPM version](https://img.shields.io/npm/v/re-audio.svg?style=flat)](https://www.npmjs.com/package/re-audio) [![NPM monthly downloads](https://img.shields.io/npm/dm/re-audio.svg?style=flat)](https://npmjs.org/package/re-audio) [![NPM total downloads](https://img.shields.io/npm/dt/re-audio.svg?style=flat)](https://npmjs.org/package/re-audio) 
+# re-audio [![NPM version](https://img.shields.io/npm/v/@sina_byn/re-audio.svg?style=flat)](https://www.npmjs.com/package/@sina_byn/re-audio) [![NPM monthly downloads](https://img.shields.io/npm/dm/@sina_byn/re-audio.svg?style=flat)](https://npmjs.org/package/@sina_byn/re-audio) [![NPM total downloads](https://img.shields.io/npm/dt/@sina_byn/re-audio.svg?style=flat)](https://npmjs.org/package/@sina_byn/re-audio) 
 
 > Creating audio players in React has never been easier
 
