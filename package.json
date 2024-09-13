@@ -1,6 +1,6 @@
 {
   "name": "@sina_byn/re-audio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "./dist/re-audio.umd.cjs",
   "module": "./dist/re-audio.js",
