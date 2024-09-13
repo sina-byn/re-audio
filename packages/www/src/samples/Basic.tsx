@@ -122,7 +122,7 @@ const App = () => {
                   <IconVolume />
                 </div>
 
-                {!loading && <span className='max-lg:text-sm mt-2'>loading...</span>}
+                {loading && <span className='max-lg:text-sm mt-2'>loading...</span>}
               </div>
             </div>
           )}
@@ -228,7 +228,7 @@ const Basic = () => {
                   <IconVolume />
                 </div>
 
-                {!loading && <span className='max-lg:text-sm mt-2'>loading...</span>}
+                {loading && <span className='max-lg:text-sm mt-2'>loading...</span>}
               </div>
             </div>
           )}
