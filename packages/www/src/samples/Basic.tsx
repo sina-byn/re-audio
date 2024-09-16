@@ -27,7 +27,7 @@ import '../css/tailwind.css';
 
 const code = `// AudioPlayer.tsx
 
-import { Audio } from 're-audio';
+import { Audio } from '@sina_byn/re-audio';
 
 const App = () => {
     return (

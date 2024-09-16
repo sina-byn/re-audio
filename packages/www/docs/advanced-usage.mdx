@@ -20,7 +20,7 @@ Passing a function as React children to the `<Audio />` component :
 ```tsx
 // AudioPlayer.tsx
 
-import { Audio } from 're-audio';
+import { Audio } from '@sina_byn/re-audio';
 
 const AudioPlayer = () => {
   return (
@@ -49,7 +49,7 @@ Using the context provided by the `<Audio />` component via the `useAudio` hook 
 ```tsx
 // PlaybackControls.tsx
 
-import { useAudio } from 're-audio';
+import { useAudio } from '@sina_byn/re-audio';
 
 const PlaybackControls = () => {
   const { playing, togglePlay, prevTrack, nextTrack, rewindTrack, forwardTrack } = useAudio();
@@ -85,7 +85,7 @@ export default PlaybackControls;
 ```tsx
 // AudioPlayer.tsx
 
-import { Audio } from 're-audio';
+import { Audio } from '@sina_byn/re-audio';
 
 // * components
 import PlaybackControls from './PlaybackControls';
@@ -112,7 +112,7 @@ To have the best of both worlds, feel free to do:
 ```tsx
 // AudioPlayer.tsx
 
-import { Audio, formatTime } from 're-audio';
+import { Audio, formatTime } from '@sina_byn/re-audio';
 
 // * components
 import PlaybackControls from './PlaybackControls';
