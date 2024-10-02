@@ -6,7 +6,6 @@
 
 > Make sure to visit the documentation website at [https://sina-byn.github.io/re-audio/](https://sina-byn.github.io/re-audio/)
 
-- Compatible with Next.js App Router and supports server-side rendering (SSR)
 - Built with TypeScript for seamless integration in TypeScript projects
 - Fully customizable with a headless component architecture
 - Developer-friendly with an intuitive API
