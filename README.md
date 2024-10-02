@@ -16,7 +16,7 @@ npm i --save @sina_byn/re-audio
 ```tsx
 // * AudioPlayer.tsx
 
-import { Audio, formatTime } from '@sina-byn/re-audio';
+import { Audio, formatTime } from '@sina_byn/re-audio';
 
 // * components
 import PlayBackControls from './PlayBackControls';
@@ -53,7 +53,7 @@ export default AudioPlayer;
 ```tsx
 // * PlayBackControls.tsx
 
-import { useAudio } from '@sina-byn/re-audio';
+import { useAudio } from '@sina_byn/re-audio';
 
 const PlayBackControls = () => {
     const { playing, togglePlay, prevTrack, nextTrack } = useAudio();
