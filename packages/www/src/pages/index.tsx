@@ -14,6 +14,7 @@ import Separator from '../components/Separator';
 import {
   IconCode,
   IconBrandNpm,
+  IconBrandNextjs,
   IconBrandGithub,
   IconAdjustments,
   IconBrandTypescript,
@@ -100,6 +101,13 @@ export default function Home(): JSX.Element {
             <Separator className='mt-10 mb-4' />
 
             <div className='space-y-4 w-[calc(100%_-_32px)] sm:w-96 mb-32 sm:mb-40'>
+              <article className='flex items-center gap-4 bg-dark border border-solid border-transparent hover:border-primary rounded-md p-4'>
+                <IconBrandNextjs size={50} className='shrink-0 text-primary mx-0' />
+                <span className='font-semibold'>
+                  Compatible with Next.js App Router and supports server-side rendering (SSR)
+                </span>
+              </article>
+
               <article className='flex items-center gap-4 bg-dark border border-solid border-transparent hover:border-primary rounded-md p-4'>
                 <IconBrandTypescript size={50} className='shrink-0 text-primary mx-0' />
                 <span className='font-semibold'>
