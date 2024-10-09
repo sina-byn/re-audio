@@ -1,3 +1,4 @@
+import Admonition from '@theme/Admonition';
 import DefaultCodeBlock from '@theme/CodeBlock';
 
 // * components
@@ -14,6 +15,8 @@ const CodeBlock = ({ code, children }: CodeProps) => {
       </DefaultCodeBlock>
 
       <BrowserWindow>{children}</BrowserWindow>
+
+      <Admonition type='warning'>In case of any issues, try refreshing the page.</Admonition>
     </>
   );
 };
