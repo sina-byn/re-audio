@@ -16,9 +16,9 @@ The `useVisualizer` hook returns an `AudioAnalyserRef` that wraps an [`AudioAnal
 You can call the `getFrequencyData()` on the provided ref to retrieve an array of integers ranging from 0 to 255.
 This array represents the real-time frequency data of the currently playing track, allowing you to visualize the audio frequencies effectively.
 
-<Visualizer />
+This hook accepts an optional `dataPoints` parameter, which defaults to `64` if not specified. This value determines the length of the array returned by `getFrequencyData()`.
 
-<br />
+<Visualizer />
 
 ### useVisualizerFrame
 
@@ -26,5 +26,7 @@ The `useVisualizerFrame` hook is a wrapper around the `useVisualizer` hook that 
 It returns a `frame`, which is a `number[]` representing the frequency data as a React state.
 
 This frame updates in real-time as the audio plays, allowing you to render your visualizer without any additional concerns about data management or updates.
+
+This hook accepts an optional `dataPoints` parameter, which defaults to `64` if not specified. This value determines the length of the `frame`.
 
 <VisualizerFrame />
