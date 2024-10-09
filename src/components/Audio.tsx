@@ -52,7 +52,7 @@ const reducer = (audioState: AudioState, action: AudioAction): AudioState => {
 };
 
 // * data
-const DEFAULT_AUDIO_STATE: Omit<AudioState, 'currentTrack'> = {
+const DEFAULT_AUDIO_STATE: AudioState = {
   playing: false,
   loading: false,
   duration: 0,
@@ -104,11 +104,11 @@ export type AudioState = {
   volume: number;
   playbackRate: number;
   trackIndex: number;
-  currentTrack: AudioTrack;
 };
 
 export type AudioContext = AudioState & {
   audioRef: React.RefObject<HTMLAudioElement>;
+  currentTrack: AudioTrack;
   playlist: AudioTrack[];
   play: () => void;
   pause: () => void;
@@ -156,11 +156,10 @@ export const Audio = ({
     repeat: defaultRepeat,
     shuffle: !!defaultShuffle,
     trackIndex: defaultTrackIndex % playlist.length,
-    currentTrack: playlist[defaultTrackIndex % playlist.length],
   });
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const track = playlist[audioState.trackIndex];
+  const currentTrack = playlist[audioState.trackIndex];
   const trackCount = playlist.length;
 
   const initialRender = useRef<boolean>(true);
@@ -303,6 +302,7 @@ export const Audio = ({
     playTrack,
     playlist,
     audioRef,
+    currentTrack,
   };
 
   useEffect(() => {
@@ -339,9 +339,9 @@ export const Audio = ({
         onWaiting={dispatch.bind(null, { type: 'loading', payload: true })}
         onLoadStart={dispatch.bind(null, { type: 'loading', payload: true })}
       >
-        {track !== null && <source src={track.src} type={track.type} />}
-        {track?.fallbacks &&
-          track.fallbacks.map(fallback => (
+        {currentTrack !== null && <source src={currentTrack.src} type={currentTrack.type} />}
+        {currentTrack?.fallbacks &&
+          currentTrack.fallbacks.map(fallback => (
             <source key={fallback.src} src={fallback.src} type={fallback.type} />
           ))}
       </audio>
