@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 
 // * hooks
+import { useAudio } from '../components';
 import useVisualizer from './useVisualizer';
 
 const useVisualizerFrame = (dataPoints = 64) => {
   const analyserRef = useVisualizer(dataPoints);
+  const { playing } = useAudio();
   const [frame, setFrame] = useState<number[]>(analyserRef.current.getFrequencyData());
 
   useEffect(() => {
@@ -16,14 +18,14 @@ const useVisualizerFrame = (dataPoints = 64) => {
       animationFrameId = requestAnimationFrame(updateBars);
     };
 
-    updateBars();
+    if (playing) updateBars();
 
     return () => {
       if (animationFrameId !== undefined) {
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, []);
+  }, [playing]);
 
   return frame;
 };
