@@ -4,7 +4,7 @@ sidebar_position: 2
 
 import Basic from '../src/samples/Basic';
 
-# Advanced Usage
+# Composition Patterns
 
 ---
 
@@ -15,6 +15,7 @@ There are two main ways to use this package, and combining both methods offers a
 3. [The combined approach](#3-the-combined-approach)
 
 ## 1. `<Audio />` function as children
+
 Passing a function as React children to the `<Audio />` component :
 
 ```tsx
@@ -44,6 +45,7 @@ export default AudioPlayer;
 ```
 
 ## 2. The `useAudio` hook
+
 Using the context provided by the `<Audio />` component via the `useAudio` hook :
 
 ```tsx
@@ -106,7 +108,9 @@ const AudioPlayer = () => {
 
 export default AudioPlayer;
 ```
+
 ## 3. The combined approach
+
 To have the best of both worlds, feel free to do:
 
 ```tsx

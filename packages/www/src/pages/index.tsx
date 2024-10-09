@@ -123,7 +123,7 @@ export default function Home(): JSX.Element {
               <article className='flex items-center gap-4 bg-dark border border-solid border-transparent hover:border-primary rounded-md p-4'>
                 <IconChartBar size={50} className='shrink-0 text-primary mx-0' />
                 <span className='font-semibold'>
-                  - Includes custom React hookssl for easily creating audio visualizers
+                  Includes custom React hookssl for easily creating audio visualizers
                 </span>
               </article>
             </div>
