@@ -16,12 +16,13 @@ export type ColorChannel = keyof Pixel;
 
 export type Pixel = { r: number; g: number; b: number };
 
-type PaletteConfig = { coverKey?: string; colorCount?: number };
+type PaletteConfig = { coverKey?: string; colorCount?: number; defaultPalette?: string[] };
 
 type MessageData = { depth: number; pixelsData: Uint8ClampedArray };
 
 type UseCoverPaletteReturn = [string[], boolean];
 
+// * utils
 const workerFunc = () => {
   const quantization = (pixels: Pixel[], depth: number, mainChannel: ColorChannel): Pixel[] => {
     const MAX_DEPTH = 4;
@@ -110,7 +111,7 @@ const createWorker = (): [Worker, string] => {
 };
 
 const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn => {
-  const { coverKey, colorCount } = { ...DEFAULT_PALETTE_CONFIG, ...paletteConfig };
+  const { coverKey, colorCount, defaultPalette } = { ...DEFAULT_PALETTE_CONFIG, ...paletteConfig };
   const { currentTrack } = useAudio();
 
   if (!ALLOWED_COUNTS.includes(colorCount)) {
@@ -126,7 +127,15 @@ const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn =
     let workerURL: string;
 
     const cover = currentTrack[coverKey] as string;
-    if (!cover) throw new Error(`Could not find '${coverKey}' in provided track`);
+    const hasDefaultPalette = Array.isArray(defaultPalette) && defaultPalette.length > 0;
+
+    if (!cover) {
+      if (!hasDefaultPalette) throw new Error(`Could not find '${coverKey}' in provided track`);
+
+      setColors(defaultPalette);
+      setLoading(false);
+      return;
+    }
 
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
