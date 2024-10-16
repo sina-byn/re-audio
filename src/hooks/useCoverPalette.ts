@@ -122,6 +122,8 @@ const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn =
 
   useEffect(() => {
     setLoading(true);
+    let worker: Worker;
+    let workerURL: string;
 
     const cover = currentTrack[coverKey] as string;
     if (!cover) throw new Error(`Could not find '${coverKey}' in provided track`);
@@ -141,7 +143,8 @@ const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn =
       const pixelsData = context.getImageData(0, 0, canvas.width, canvas.height).data;
       const depth = 4 - Math.log2(colorCount);
 
-      const [worker] = createWorker();
+      [worker, workerURL] = createWorker();
+
       worker.postMessage({ depth, pixelsData });
 
       worker.onmessage = (e: MessageEvent<string[]>) => {
@@ -156,6 +159,9 @@ const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn =
       image.removeEventListener('load', imageLoadHandler);
       image.remove();
       canvas.remove();
+
+      if (worker) worker.terminate();
+      if (workerURL) URL.revokeObjectURL(workerURL);
     };
   }, [currentTrack]);
 
