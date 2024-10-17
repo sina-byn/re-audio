@@ -18,7 +18,7 @@ export type Pixel = { r: number; g: number; b: number };
 
 type PaletteConfig = { coverKey?: string; colorCount?: number; defaultPalette?: string[] };
 
-type MessageData = { depth: number; pixelsData: Uint8ClampedArray };
+type PaletteData = { depth: number; pixelsData: Uint8ClampedArray };
 
 type UseCoverPaletteReturn = [string[], boolean];
 
@@ -55,7 +55,7 @@ const workerFunc = () => {
     ];
   };
 
-  self.onmessage = (e: MessageEvent<MessageData>) => {
+  self.onmessage = (e: MessageEvent<PaletteData>) => {
     const { depth, pixelsData } = e.data;
     const pixels = [];
 
