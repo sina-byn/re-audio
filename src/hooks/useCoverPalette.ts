@@ -20,8 +20,6 @@ type PaletteConfig = { coverKey?: string; colorCount?: number; defaultPalette?: 
 
 type PaletteData = { depth: number; pixelsData: Uint8ClampedArray };
 
-type UseCoverPaletteReturn = [string[], boolean];
-
 // * utils
 import { createWorker } from '../utils/worker';
 
@@ -103,7 +101,7 @@ const workerFn = () => {
   };
 };
 
-const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn => {
+const useCoverPalette = (paletteConfig?: PaletteConfig) => {
   const { coverKey, colorCount, defaultPalette } = { ...DEFAULT_PALETTE_CONFIG, ...paletteConfig };
   const { currentTrack } = useAudio();
 
@@ -163,7 +161,7 @@ const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn =
     };
   }, [currentTrack]);
 
-  return [colors, pending];
+  return [colors, pending] as const;
 };
 
 export default useCoverPalette;
