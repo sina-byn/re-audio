@@ -119,10 +119,10 @@ const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn =
   }
 
   const [colors, setColors] = useState<string[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [pending, setPending] = useState<boolean>(false);
 
   useEffect(() => {
-    setLoading(true);
+    setPending(true);
     let worker: Worker;
     let workerURL: string;
 
@@ -133,7 +133,7 @@ const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn =
       if (!hasDefaultPalette) throw new Error(`Could not find '${coverKey}' in provided track`);
 
       setColors(defaultPalette);
-      setLoading(false);
+      setPending(false);
       return;
     }
 
@@ -158,7 +158,7 @@ const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn =
 
       worker.onmessage = (e: MessageEvent<string[]>) => {
         setColors(e.data);
-        setLoading(false);
+        setPending(false);
       };
     };
 
@@ -174,7 +174,7 @@ const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn =
     };
   }, [currentTrack]);
 
-  return [colors, loading];
+  return [colors, pending];
 };
 
 export default useCoverPalette;
