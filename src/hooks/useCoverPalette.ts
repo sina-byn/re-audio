@@ -23,7 +23,9 @@ type PaletteData = { depth: number; pixelsData: Uint8ClampedArray };
 type UseCoverPaletteReturn = [string[], boolean];
 
 // * utils
-const workerFunc = () => {
+import { createWorker } from '../utils/worker';
+
+const workerFn = () => {
   const quantization = (pixels: Pixel[], depth: number, mainChannel: ColorChannel): Pixel[] => {
     const MAX_DEPTH = 4;
 
@@ -101,15 +103,6 @@ const workerFunc = () => {
   };
 };
 
-const createWorker = (): [Worker, string] => {
-  const blob = new Blob([`(${workerFunc.toString()})()`], { type: 'application/javascript' });
-
-  const workerURL = URL.createObjectURL(blob);
-  const worker = new Worker(workerURL);
-
-  return [worker, workerURL];
-};
-
 const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn => {
   const { coverKey, colorCount, defaultPalette } = { ...DEFAULT_PALETTE_CONFIG, ...paletteConfig };
   const { currentTrack } = useAudio();
@@ -123,8 +116,6 @@ const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn =
 
   useEffect(() => {
     setPending(true);
-    let worker: Worker;
-    let workerURL: string;
 
     const cover = currentTrack[coverKey] as string;
     const hasDefaultPalette = Array.isArray(defaultPalette) && defaultPalette.length > 0;
@@ -152,13 +143,14 @@ const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn =
       const pixelsData = context.getImageData(0, 0, canvas.width, canvas.height).data;
       const depth = 4 - Math.log2(colorCount);
 
-      [worker, workerURL] = createWorker();
+      const [worker, cleanup] = createWorker(workerFn);
 
       worker.postMessage({ depth, pixelsData });
 
       worker.onmessage = (e: MessageEvent<string[]>) => {
         setColors(e.data);
         setPending(false);
+        cleanup();
       };
     };
 
@@ -168,9 +160,6 @@ const useCoverPalette = (paletteConfig?: PaletteConfig): UseCoverPaletteReturn =
       image.removeEventListener('load', imageLoadHandler);
       image.remove();
       canvas.remove();
-
-      if (worker) worker.terminate();
-      if (workerURL) URL.revokeObjectURL(workerURL);
     };
   }, [currentTrack]);
 
