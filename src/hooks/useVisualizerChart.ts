@@ -6,8 +6,6 @@ import { useAudio } from '../components';
 // * types
 type ChartData = { dataPoints: number; rawAudioData: Float32Array };
 
-type UseVisualizerChartReturn = [number[], boolean];
-
 // * utils
 import { createWorker } from '../utils/worker';
 
@@ -31,7 +29,7 @@ const workerFn = () => {
   };
 };
 
-const useVisualizerChart = (dataPoints = 64): UseVisualizerChartReturn => {
+const useVisualizerChart = (dataPoints = 64) => {
   const { audioRef, currentTrack } = useAudio();
 
   const [amplitude, setAmplitude] = useState<number[]>([]);
@@ -45,17 +43,9 @@ const useVisualizerChart = (dataPoints = 64): UseVisualizerChartReturn => {
 
     // @ts-ignore
     const audioContext = new (AudioContext || webkitAudioContext)();
-    const audioSource = audioContext.createMediaElementSource(audio);
-    const gainNode = audioContext.createGain();
-
-    audioSource.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
     audioContextRef.current = audioContext;
 
     return () => {
-      audioSource?.disconnect();
-      gainNode?.disconnect();
       audioContext?.close();
     };
   }, []);
@@ -86,7 +76,7 @@ const useVisualizerChart = (dataPoints = 64): UseVisualizerChartReturn => {
     })();
   }, [currentTrack]);
 
-  return [amplitude, pending];
+  return [amplitude, pending] as const;
 };
 
 export default useVisualizerChart;
