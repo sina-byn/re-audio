@@ -107,7 +107,7 @@ export type AudioState = {
 };
 
 export type AudioContext = AudioState & {
-  audioRef: React.RefObject<HTMLAudioElement>;
+  audioRef: React.RefObject<HTMLAudioElement | null>;
   currentTrack: AudioTrack;
   playlist: AudioTrack[];
   play: () => void;
