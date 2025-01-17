@@ -28,7 +28,7 @@ import { Audio, formatTime } from '@sina_byn/re-audio';
 import PlayBackControls from './PlayBackControls';
 
 const AudioPlayer = () => {
-  return () => (
+  return (
     <Audio
       playlist={[
         { id: 1, src: '/audio/1.mp3', name: 'for-her-chill' },
