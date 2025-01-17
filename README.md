@@ -11,6 +11,16 @@
 - Developer-friendly with an intuitive API
 - Includes custom React hooks for easily creating audio visualizers
 
+## Compatibility Notice
+
+Starting from version `2.0.0`, this library is built on **React 19** and is **not compatible** with previous versions of React. 
+
+If you are using **React 18**, please install version `1.1.1` of this library:
+
+```bash
+npm install --save @sina_byn/re-audio@1.1.1
+```
+
 ## Installation
 
 ```bash
