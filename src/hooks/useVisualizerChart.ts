@@ -35,7 +35,7 @@ const useVisualizerChart = (dataPoints = 64) => {
   const [amplitude, setAmplitude] = useState<number[]>([]);
   const [pending, setPending] = useState<boolean>(false);
 
-  const audioContextRef = useRef<AudioContext>();
+  const audioContextRef = useRef<AudioContext>(null);
 
   useEffect(() => {
     const audio = audioRef.current;
