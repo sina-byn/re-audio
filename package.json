@@ -27,9 +27,9 @@
   "description": "A highly customizable React audio player library with support for modern web audio features and seamless integration into any React application.",
   "repository": "github:sina-byn/re-audio",
   "homepage": "https://sina-byn.github.io/re-audio/",
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+  "peerDependencies": {
+    "react": "19.*",
+    "react-dom": "19.*"
   },
   "devDependencies": {
     "@types/node": "^22.2.0",
@@ -41,6 +41,8 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "rimraf": "^6.0.1",
     "typescript": "^5.2.2",
     "vite": "^5.3.4",
