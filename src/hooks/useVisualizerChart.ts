@@ -57,7 +57,7 @@ const useVisualizerChart = (dataPoints = 64) => {
       const audio = audioRef.current;
       const audioContext = audioContextRef.current;
 
-      if (!audio || !audioContext) return;
+      if (!audio || !audioContext || !currentTrack) return;
 
       const res = await fetch(currentTrack.src);
       const arrayBuffer = await res.arrayBuffer();

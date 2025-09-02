@@ -113,6 +113,8 @@ const useCoverPalette = (paletteConfig?: PaletteConfig) => {
   const [pending, setPending] = useState<boolean>(false);
 
   useEffect(() => {
+    if (!currentTrack) return;
+    
     setPending(true);
 
     const cover = currentTrack[coverKey] as string;
