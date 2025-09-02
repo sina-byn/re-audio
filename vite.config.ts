@@ -23,6 +23,7 @@ export default defineConfig({
       },
     },
   },
+  esbuild: { keepNames: true },
   plugins: [
     react(),
     dts({
