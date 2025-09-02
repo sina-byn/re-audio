@@ -6,6 +6,7 @@ import {
   useContext,
   useCallback,
   createContext,
+  type FC,
 } from 'react';
 
 // * utils
@@ -139,7 +140,7 @@ type AudioAction =
       payload: number;
     };
 
-export const Audio = ({
+export const Audio: FC<AudioProps> = ({
   playlist,
   defaultMuted,
   defaultShuffle,
@@ -149,7 +150,7 @@ export const Audio = ({
   defaultTrackIndex = 0,
   startMargin = 5,
   children,
-}: AudioProps) => {
+}) => {
   const [audioState, dispatch] = useReducer(reducer, {
     ...DEFAULT_AUDIO_STATE,
     muted: !!defaultMuted,
@@ -349,6 +350,8 @@ export const Audio = ({
     </audioContext.Provider>
   );
 };
+
+Audio.displayName = 'Audio';
 
 export const useAudio = () => {
   const context = useContext(audioContext);
