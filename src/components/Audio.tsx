@@ -108,7 +108,7 @@ export type AudioState = {
 
 export type AudioContext = AudioState & {
   audioRef: React.RefObject<HTMLAudioElement | null>;
-  currentTrack: AudioTrack;
+  currentTrack: AudioTrack | null;
   playlist: AudioTrack[];
   play: () => void;
   pause: () => void;
@@ -159,7 +159,7 @@ export const Audio = ({
   });
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const currentTrack = playlist[audioState.trackIndex];
+  const currentTrack = playlist.length > 0 ? playlist[audioState.trackIndex] : null;
   const trackCount = playlist.length;
 
   const initialRender = useRef<boolean>(true);
