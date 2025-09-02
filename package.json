@@ -32,6 +32,7 @@
     "react-dom": "19.*"
   },
   "devDependencies": {
+    "@tabler/icons-react": "^3.34.1",
     "@types/node": "^22.2.0",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
