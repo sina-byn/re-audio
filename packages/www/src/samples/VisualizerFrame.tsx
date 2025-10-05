@@ -27,7 +27,7 @@ import '../css/tailwind.css';
 
 const code = `// AudioPlayer.tsx
 
-import { Audio, useVisualizerFrame, formatTime } from '../components/ReAudio';
+import { Audio, useVisualizerFrame, formatTime } from '@sina_byn/re-audio';
 
 const Visualizer = () => {
   const frame = useVisualizerFrame(16);

@@ -29,7 +29,7 @@ import '../css/tailwind.css';
 
 const code = `// AudioPlayer.tsx
 
-import { Audio, useVisualizer, formatTime } from '../components/ReAudio';
+import { Audio, useVisualizer, formatTime } from '@sina_byn/re-audio';
 
 const Visualizer = () => {
   const analyserRef = useVisualizer(32);
