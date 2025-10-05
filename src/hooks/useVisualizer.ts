@@ -12,10 +12,12 @@ const DEFAULT_ANALYSER = (dataPoints: number) => ({
 type AudioAnalyser = { getFrequencyData: () => number[] };
 
 const useVisualizer = (dataPoints = 64) => {
-  const { audioRef, playing, trackIndex } = useAudio();
+  const { audioRef, playing } = useAudio();
 
   const analyserRef = useRef<AudioAnalyser>(DEFAULT_ANALYSER(dataPoints));
   const initialized = useRef<boolean>(false);
+
+  const audioContextRef = useRef<AudioContext | null>(null);
 
   const initAnalyser = useCallback(() => {
     const audio = audioRef.current;
@@ -23,6 +25,8 @@ const useVisualizer = (dataPoints = 64) => {
 
     // @ts-ignore
     const audioContext = new (AudioContext || webkitAudioContext)();
+    audioContextRef.current = audioContext;
+
     const audioSource = audioContext.createMediaElementSource(audio);
     const analyser = audioContext.createAnalyser();
 
@@ -40,25 +44,14 @@ const useVisualizer = (dataPoints = 64) => {
         return [...freqData];
       },
     };
-
-    return () => {
-      audioSource.disconnect();
-      analyser.disconnect();
-      audioContext.close();
-    };
-  }, []);
+  }, [audioRef, dataPoints]);
 
   useEffect(() => {
-    if (!initialized.current) return;
-    return initAnalyser();
-  }, [trackIndex]);
-
-  useEffect(() => {
-    if (initialized.current) return;
+    if (initialized.current || !playing) return;
     if (!('userActivation' in navigator && navigator.userActivation.hasBeenActive)) return;
 
-    return initAnalyser();
-  }, [playing]);
+    initAnalyser();
+  }, [playing, initAnalyser]);
 
   return analyserRef;
 };
