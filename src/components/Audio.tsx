@@ -165,13 +165,9 @@ export const Audio = ({
   const initialRender = useRef<boolean>(true);
 
   // prettier-ignore
-  const suhffledPlaylist = useMemo(() => generateShuffledArray(playlist.length), [playlist, audioState.shuffle]);
+  const shuffledPlaylist = useMemo(() => generateShuffledArray(playlist.length), [playlist, audioState.shuffle]);
   // prettier-ignore
-  const shuffledIndex = useMemo(() => suhffledPlaylist.indexOf(audioState.trackIndex), [suhffledPlaylist, audioState.trackIndex]);
-
-  const endHandler = useCallback(() => {
-    if (audioState.repeat === 'playlist') nextTrack();
-  }, [playlist, audioState.shuffle, audioState.trackIndex]);
+  const shuffledIndex = useMemo(() => shuffledPlaylist.indexOf(audioState.trackIndex), [shuffledPlaylist, audioState.trackIndex]);
 
   const timeUpdateHandler = useCallback((e: AudioEvent) => {
     const audio = e.currentTarget;
@@ -251,7 +247,7 @@ export const Audio = ({
   const nextTrack = useCallback(() => {
     if (audioState.shuffle) {
       const newShuffledIndex = shuffledIndex === trackCount - 1 ? 0 : shuffledIndex + 1;
-      dispatch({ type: 'track', payload: suhffledPlaylist[newShuffledIndex] });
+      dispatch({ type: 'track', payload: shuffledPlaylist[newShuffledIndex] });
       return;
     }
 
@@ -259,7 +255,7 @@ export const Audio = ({
     const newTrackIndex = currIndex === trackCount - 1 ? 0 : currIndex + 1;
 
     dispatch({ type: 'track', payload: newTrackIndex });
-  }, [playlist, audioState.shuffle, audioState.trackIndex]);
+  }, [audioState.shuffle, audioState.trackIndex, shuffledIndex, trackCount, shuffledPlaylist]);
 
   const prevTrack = useCallback(() => {
     const audio = audioRef.current;
@@ -272,14 +268,18 @@ export const Audio = ({
 
     if (audioState.shuffle) {
       const newShuffledIndex = shuffledIndex === 0 ? trackCount - 1 : shuffledIndex - 1;
-      dispatch({ type: 'track', payload: suhffledPlaylist[newShuffledIndex] });
+      dispatch({ type: 'track', payload: shuffledPlaylist[newShuffledIndex] });
       return;
     }
 
     const currIndex = audioState.trackIndex;
     const newTrackIndex = currIndex === 0 ? trackCount - 1 : currIndex - 1;
     dispatch({ type: 'track', payload: newTrackIndex });
-  }, [playlist, audioState.shuffle, audioState.trackIndex]);
+  }, [audioState.shuffle, audioState.trackIndex, shuffledIndex, trackCount, shuffledPlaylist, startMargin]);
+
+  const endHandler = useCallback(() => {
+    if (audioState.repeat === 'playlist') nextTrack();
+  }, [audioState.repeat, nextTrack]);
 
   // prettier-ignore
   const playTrack = useCallback((trackIndex: number) => dispatch({ type: 'track', payload: trackIndex }), []);
@@ -314,18 +314,19 @@ export const Audio = ({
     const audio = audioRef.current;
     if (!audio) return;
 
+    audio.load();
+
     if (initialRender.current) {
       initialRender.current = false;
       return;
     }
 
     if ('userActivation' in navigator && navigator.userActivation.hasBeenActive) audio.play();
-  }, [audioState.trackIndex]);
+  }, [currentTrack, audioState.trackIndex]);
 
   return (
     <audioContext.Provider value={context}>
       <audio
-        key={audioState.trackIndex}
         ref={audioRef}
         muted={audioState.muted}
         loop={audioState.repeat === 'track'}
