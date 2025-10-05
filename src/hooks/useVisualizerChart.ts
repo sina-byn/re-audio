@@ -53,27 +53,53 @@ const useVisualizerChart = (dataPoints = 64) => {
   useEffect(() => {
     setPending(true);
 
+    let cleanup: Function | null = null;
+    let aborted = false;
+
     (async () => {
       const audio = audioRef.current;
       const audioContext = audioContextRef.current;
 
-      if (!audio || !audioContext || !currentTrack) return;
-
-      const res = await fetch(currentTrack.src);
-      const arrayBuffer = await res.arrayBuffer();
-      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-      const rawAudioData = audioBuffer.getChannelData(0);
-
-      const [worker, cleanup] = createWorker(workerFn);
-
-      worker.postMessage({ dataPoints, rawAudioData });
-
-      worker.onmessage = (e: MessageEvent<number[]>) => {
-        setAmplitude(e.data);
+      if (!audio || !audioContext || !currentTrack) {
         setPending(false);
-        cleanup();
-      };
+        return;
+      }
+
+      try {
+        const res = await fetch(currentTrack.src);
+        if (aborted) return;
+
+        const arrayBuffer = await res.arrayBuffer();
+        if (aborted) return;
+
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+        if (aborted) return;
+
+        const rawAudioData = audioBuffer.getChannelData(0);
+
+        const [worker, cleanupFn] = createWorker(workerFn);
+        cleanup = cleanupFn;
+
+        worker.postMessage({ dataPoints, rawAudioData });
+
+        worker.onmessage = (e: MessageEvent<number[]>) => {
+          if (aborted) return;
+
+          setAmplitude(e.data);
+          setPending(false);
+          cleanupFn();
+
+          cleanup = null;
+        };
+      } catch (err) {
+        if (!aborted) setPending(false);
+      }
     })();
+
+    return () => {
+      aborted = true;
+      if (cleanup) cleanup();
+    };
   }, [currentTrack]);
 
   return [amplitude, pending] as const;
