@@ -164,6 +164,8 @@ export const Audio = ({
   const currentTrack = playlist.length > 0 ? playlist[audioState.trackIndex] : null;
   const trackCount = playlist.length;
 
+  const hasBeenPlayed = useRef<boolean>(false);
+
   // prettier-ignore
   const shuffledPlaylist = useMemo(() => generateShuffledArray(playlist.length), [playlist, audioState.shuffle]);
   // prettier-ignore
@@ -288,6 +290,11 @@ export const Audio = ({
     if (audioState.repeat === 'playlist') nextTrack();
   }, [audioState.repeat, nextTrack]);
 
+  const playHandler = useCallback(() => {
+    dispatch('play');
+    hasBeenPlayed.current = true;
+  }, []);
+
   // prettier-ignore
   const playTrack = useCallback((trackIndex: number) => dispatch({ type: 'track', payload: trackIndex }), []);
 
@@ -325,11 +332,13 @@ export const Audio = ({
 
     if (
       autoplayOnTrackChange &&
-      audioState.playing &&
+      hasBeenPlayed.current &&
       'userActivation' in navigator &&
       navigator.userActivation.hasBeenActive
     ) {
       audio.play();
+    } else {
+      dispatch('pause');
     }
   }, [currentTrack, audioState.trackIndex, autoplayOnTrackChange]);
 
@@ -340,7 +349,7 @@ export const Audio = ({
         muted={audioState.muted}
         loop={audioState.repeat === 'track'}
         onEnded={endHandler}
-        onPlay={dispatch.bind(null, 'play')}
+        onPlay={playHandler}
         onPause={dispatch.bind(null, 'pause')}
         onTimeUpdate={timeUpdateHandler}
         onVolumeChange={volumeChangeHandler}
