@@ -82,6 +82,7 @@ export type AudioProps = {
   defaultPlaybackRate?: number;
   defaultTrackIndex?: number;
   startMargin?: number | boolean;
+  autoplayOnTrackChange?: boolean;
   children: AudioChildren;
 };
 
@@ -148,6 +149,7 @@ export const Audio = ({
   defaultRepeat = 'playlist',
   defaultTrackIndex = 0,
   startMargin = 5,
+  autoplayOnTrackChange = true,
   children,
 }: AudioProps) => {
   const [audioState, dispatch] = useReducer(reducer, {
@@ -321,8 +323,15 @@ export const Audio = ({
 
     audio.load();
 
-    if (audioState.playing && 'userActivation' in navigator && navigator.userActivation.hasBeenActive) audio.play();
-  }, [currentTrack, audioState.trackIndex]);
+    if (
+      autoplayOnTrackChange &&
+      audioState.playing &&
+      'userActivation' in navigator &&
+      navigator.userActivation.hasBeenActive
+    ) {
+      audio.play();
+    }
+  }, [currentTrack, audioState.trackIndex, autoplayOnTrackChange]);
 
   return (
     <audioContext.Provider value={context}>
