@@ -162,8 +162,6 @@ export const Audio = ({
   const currentTrack = playlist.length > 0 ? playlist[audioState.trackIndex] : null;
   const trackCount = playlist.length;
 
-  const initialRender = useRef<boolean>(true);
-
   // prettier-ignore
   const shuffledPlaylist = useMemo(() => generateShuffledArray(playlist.length), [playlist, audioState.shuffle]);
   // prettier-ignore
@@ -275,7 +273,14 @@ export const Audio = ({
     const currIndex = audioState.trackIndex;
     const newTrackIndex = currIndex === 0 ? trackCount - 1 : currIndex - 1;
     dispatch({ type: 'track', payload: newTrackIndex });
-  }, [audioState.shuffle, audioState.trackIndex, shuffledIndex, trackCount, shuffledPlaylist, startMargin]);
+  }, [
+    audioState.shuffle,
+    audioState.trackIndex,
+    shuffledIndex,
+    trackCount,
+    shuffledPlaylist,
+    startMargin,
+  ]);
 
   const endHandler = useCallback(() => {
     if (audioState.repeat === 'playlist') nextTrack();
@@ -316,12 +321,7 @@ export const Audio = ({
 
     audio.load();
 
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
-
-    if ('userActivation' in navigator && navigator.userActivation.hasBeenActive) audio.play();
+    if (audioState.playing && 'userActivation' in navigator && navigator.userActivation.hasBeenActive) audio.play();
   }, [currentTrack, audioState.trackIndex]);
 
   return (
