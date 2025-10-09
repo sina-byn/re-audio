@@ -152,6 +152,8 @@ const AudioPlayer = () => {
     </Audio>
   );
 };
+
+export default AudioPlayer;
 `;
 
 const VisualizerChart = () => {
