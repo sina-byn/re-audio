@@ -56,6 +56,12 @@ const config: Config = {
   plugins: [tailwindPlugin],
 
   themeConfig: {
+    metadata: [
+      {
+        name: 'google-site-verification',
+        content: '9V320PW1a86UlqkZ9O8h49LDatTzhD5HYdZvCN5SQ-Y',
+      },
+    ],
     colorMode: {
       defaultMode: 'dark',
       disableSwitch: true,
