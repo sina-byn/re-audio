@@ -53,6 +53,7 @@ const useVisualizerChart = (dataPoints = 64) => {
   useEffect(() => {
     setPending(true);
 
+    const controller = new AbortController();
     let cleanup: Function | null = null;
     let aborted = false;
 
@@ -66,7 +67,7 @@ const useVisualizerChart = (dataPoints = 64) => {
       }
 
       try {
-        const res = await fetch(currentTrack.src);
+        const res = await fetch(currentTrack.src, { signal: controller.signal });
         if (aborted) return;
 
         const arrayBuffer = await res.arrayBuffer();
@@ -98,6 +99,7 @@ const useVisualizerChart = (dataPoints = 64) => {
 
     return () => {
       aborted = true;
+      controller.abort();
       if (cleanup) cleanup();
     };
   }, [currentTrack]);
