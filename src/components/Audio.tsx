@@ -164,7 +164,7 @@ export const Audio = ({
   const currentTrack = playlist.length > 0 ? playlist[audioState.trackIndex] : null;
   const trackCount = playlist.length;
 
-  const isConnected = useRef<boolean>(false);
+  const pendingPlay = useRef<Promise<void> | null>(null);
   const hasBeenPlayed = useRef<boolean>(false);
 
   // prettier-ignore
@@ -189,15 +189,45 @@ export const Audio = ({
     dispatch({ type: 'volume', payload: audio.volume });
   }, []);
 
-  const play = useCallback(() => audioRef.current?.play(), []);
+  const play = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
 
-  const pause = useCallback(() => audioRef.current?.pause(), []);
+    pendingPlay.current = audio.play().catch(error => {
+      if (error.name !== 'AbortError') {
+        console.error('Audio play error:', error);
+      }
+    });
+  }, []);
+
+  const pause = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (pendingPlay.current) {
+      pendingPlay.current
+        .then(() => {
+          audio.pause();
+          pendingPlay.current = null;
+        })
+        .catch(() => {
+          pendingPlay.current = null;
+        });
+    } else {
+      audio.pause();
+    }
+  }, []);
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    audio.paused ? audio.play() : audio.pause();
+    if (audio.paused) {
+      play();
+      return;
+    }
+
+    return audio.pause();
   }, []);
 
   const toggleMuted = useCallback(() => dispatch('muted'), []);
@@ -323,16 +353,11 @@ export const Audio = ({
   useEffect(() => {
     if (!isNullish(defaultVolume)) setVolume(defaultVolume!);
     if (!isNullish(defaultPlaybackRate)) setPlaybackRate(defaultPlaybackRate!);
-
-    return () => {
-      const audio = audioRef.current;
-      isConnected.current = Boolean(audio);
-    };
   }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio || !currentTrack || !isConnected.current) return;
+    if (!audio || !currentTrack) return;
 
     audio.load();
 
@@ -342,14 +367,28 @@ export const Audio = ({
       'userActivation' in navigator &&
       navigator.userActivation.hasBeenActive
     ) {
-      audio.play();
+      pendingPlay.current = audio.play().catch(error => {
+        if (error.name !== 'AbortError') {
+          console.error('Audio play error:', error);
+        }
+      });
     } else {
       dispatch('pause');
     }
-    return () => {
-      console.log('after');
-    };
   }, [currentTrack, audioState.trackIndex, autoplayOnTrackChange]);
+
+  useEffect(() => {
+    return () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      if (pendingPlay.current) {
+        pendingPlay.current.then(() => audio.pause()).catch(() => {});
+      } else {
+        audio.pause();
+      }
+    };
+  }, []);
 
   return (
     <audioContext.Provider value={context}>
