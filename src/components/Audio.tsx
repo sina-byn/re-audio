@@ -164,6 +164,7 @@ export const Audio = ({
   const currentTrack = playlist.length > 0 ? playlist[audioState.trackIndex] : null;
   const trackCount = playlist.length;
 
+  const isConnected = useRef<boolean>(false);
   const hasBeenPlayed = useRef<boolean>(false);
 
   // prettier-ignore
@@ -322,11 +323,16 @@ export const Audio = ({
   useEffect(() => {
     if (!isNullish(defaultVolume)) setVolume(defaultVolume!);
     if (!isNullish(defaultPlaybackRate)) setPlaybackRate(defaultPlaybackRate!);
+
+    return () => {
+      const audio = audioRef.current;
+      isConnected.current = Boolean(audio);
+    };
   }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !currentTrack || !isConnected.current) return;
 
     audio.load();
 
@@ -340,6 +346,9 @@ export const Audio = ({
     } else {
       dispatch('pause');
     }
+    return () => {
+      console.log('after');
+    };
   }, [currentTrack, audioState.trackIndex, autoplayOnTrackChange]);
 
   return (
