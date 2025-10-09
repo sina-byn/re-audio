@@ -1,0 +1,25 @@
+---
+sidebar_position: 3
+---
+
+import VisualizerChart from '../../src/samples/VisualizerChart';
+
+# useVisualizerChart
+
+---
+
+The `useVisualizerChart` hook returns a tuple `[amplitude, pending]`:
+
+- `amplitude` is an array of numbers representing the **inverted amplitude** of the currently playing audio track, suitable for visualizing waveforms or bar charts.
+- `pending` is a boolean indicating whether the audio data is still being fetched and processed.
+
+This hook accepts an optional `dataPoints` parameter, which defaults to `64` if not specified. This value determines the number of points in the `amplitude` array, effectively controlling the resolution of the visualized waveform.
+
+The hook automatically handles:
+
+- Fetching and decoding the current track.
+- Calculating the average amplitude in each block.
+- Running the computation in a Web Worker to avoid blocking the main thread.
+- Cleaning up workers and aborting fetches when the track changes.
+
+<VisualizerChart />
